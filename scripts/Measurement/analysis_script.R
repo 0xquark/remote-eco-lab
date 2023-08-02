@@ -14,22 +14,22 @@
 #You should have received a copy of the GNU General Public License
 #along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-setwd("~/")
+setwd("~/Downloads/Readings/")
 
 getwd()
 # Inputs:
-scenarioMarkersFilename <- "okular_sus.csv"
-PowerScenarioFilename <- "okular_pm_sus.csv"
-performanceScenarioFilename <- "okular_hw_sus.csv"
+scenarioMarkersFilename <- "log_sus.csv"
+PowerScenarioFilename <- "pm_sus.csv"
+performanceScenarioFilename <- "hw_sus.csv"
 # set gpuScenarioFilename to NULL (or comment out) if no gpu data is available
 gpuScenarioFilename <- NULL
 # set modelHistoryFilename to NULL (or comment out) if no history is available
 # !CAUTION! You need to handle the formatting yourself. It is done in lines 97ff and 520ff
 modelHistoryFilename <- NULL
 
-baselineMarkersFilename <- "okular_bse.csv"
-PowerBaselineFilename <- "okular_pm_bse.csv"
-performanceBaselineFilename <- "okular_hw_bse.csv"
+baselineMarkersFilename <- "log_baseline.csv"
+PowerBaselineFilename <- "pm_bse.csv"
+performanceBaselineFilename <- "hw_bse.csv"
 gpuBaselineFilename <- NULL
 
 markersTimestampFormat <- "%Y-%m-%d %H:%M:%OS"
@@ -66,7 +66,7 @@ op <- options(digits.secs = 3, OutDec = ".") # Make sure that fractions of secon
 
 # Load measurement data
 # Energy consumption data
-energyConsumptionData <- read.table(file = PowerScenarioFilename, header = T, sep = ";", skip = 1, dec = ",", stringsAsFactors = F)
+energyConsumptionData <- read.table(file = PowerScenarioFilename, header = T, sep = ";", skip = 0, dec = ",", stringsAsFactors = F)
 # Performance data
 performanceData <- read.table(file = performanceScenarioFilename, header = T, sep = ";", quote = "\"", skip = 0, dec = ".", stringsAsFactors = F)
 cols <- unlist(lapply(performanceDataColumns, grep, names(performanceData)))
@@ -160,10 +160,10 @@ for(i in 1:markersLength){
   }
 }
 
-startActions <- markers[which(markers$type == "startAction"),]
-stopActions <- markers[which(markers$type == "stopAction"),]
-baselineStartmarkers <- baselineMarkers[which(baselineMarkers$type == "startTestrun"),]
-baselineEndmarkers <- baselineMarkers[which(baselineMarkers$type == "stopTestrun"),]
+startActions <- markers[which(trimws(markers$type) == "startAction"),]
+stopActions <- markers[which(trimws(markers$type) == "stopAction"),]
+baselineStartmarkers <- baselineMarkers[which(trimws(baselineMarkers$type) == "startTestrun"),]
+baselineEndmarkers <- baselineMarkers[which(trimws(baselineMarkers$type) == "stopTestrun"),]
 #startmarkers <- startmarkers[with(startmarkers, order(timestamp)),]
 #baselineStartmarkers <- baselineStartmarkers[with(baselineStartmarkers, order(timestamp)),]
 
@@ -261,16 +261,7 @@ shortestTestrun <- 1
 shortestTestrunCount <- nrow(powerMeasurement[[1]])
 longestTestrun <- 1
 longestTestrunCount <- nrow(powerMeasurement[[1]])
-for(i in 2:length(powerMeasurement)){
-  if(shortestTestrunCount > nrow(powerMeasurement[[i]])){
-    shortestTestrunCount <- nrow(powerMeasurement[[i]])
-    shortestTestrun <- i
-  }
-  if(longestTestrunCount < nrow(powerMeasurement[[i]])){
-    longestTestrunCount <- nrow(powerMeasurement[[i]])
-    longestTestrun <- i
-  }
-}
+
 
 
 # generate results and plots for the testruns
@@ -447,3 +438,4 @@ options(op)
 
 #save data
 save.image(dataSaveFileName)
+
