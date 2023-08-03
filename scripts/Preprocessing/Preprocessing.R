@@ -3,14 +3,15 @@ rm(list = ls())
 
 # load package
 library(tidyverse)
+library(readr)
 library(lubridate) # for dates/times
 #library(anytime) # for dates/times
 #library(magrittr)
 options(scipen=999) # turn off scientific notation
 
 # set wd
-paste(dirname("~/Downloads/artifacts/"), '/', sep = '')
-setwd(dirname("~/Downloads/artifacts/"))
+paste(dirname("~/"), '/', sep = '')
+setwd(dirname("~/"))
 getwd()
 
 #################
@@ -18,11 +19,11 @@ getwd()
 #################
 
 # load power meter data
-raw_pm_bse <- read_delim('~/Downloads/artifacts/testreadings2.csv', delim = ' ', col_names = F) %>% 
+raw_pm_bse <- read_delim('~/testreadings2.csv', delim = ' ', col_names = F) %>% 
   rename(nanoseconds = X1, watts = X2)
-raw_pm_idl <- read_delim('~/Downloads/artifacts/testreadings3.csv', delim = ' ', col_names = F) %>% 
+raw_pm_idl <- read_delim('~/testreadings3.csv', delim = ' ', col_names = F) %>% 
   rename(nanoseconds = X1, watts = X2)
-raw_pm_sus <- read_delim('~/Downloads/artifacts/testreadings1.csv', delim = ' ', col_names = F) %>% 
+raw_pm_sus <- read_delim('~/testreadings1.csv', delim = ' ', col_names = F) %>% 
   rename(nanoseconds = X1, watts = X2)
 
 # Convert for datetime column
@@ -89,9 +90,9 @@ head(pm_idl)
 head(pm_sus)
 
 # save files
-write.table(pm_bse, '~/Downloads/artifacts/pm_bse.csv', sep = ";", row.names = TRUE, quote = FALSE, col.names = TRUE, append = FALSE, eol = ";\n")
-write.table(pm_idl, '~/Downloads/artifacts/pm_idl.csv', sep = ";", row.names = TRUE, quote = FALSE, col.names = TRUE, append = FALSE, eol = ";\n")
-write.table(pm_sus, '~/Downloads/artifacts/pm_sus.csv', sep = ";", row.names = TRUE, quote = FALSE, col.names = TRUE, append = FALSE, eol = ";\n")
+write.table(pm_bse, '~/pm_bse.csv', sep = ";", row.names = TRUE, quote = FALSE, col.names = TRUE, append = FALSE, eol = ";\n")
+write.table(pm_idl, '~/pm_idl.csv', sep = ";", row.names = TRUE, quote = FALSE, col.names = TRUE, append = FALSE, eol = ";\n")
+write.table(pm_sus, '~/pm_sus.csv', sep = ";", row.names = TRUE, quote = FALSE, col.names = TRUE, append = FALSE, eol = ";\n")
 
 ##########################
 ## hardware performance ##
@@ -116,10 +117,9 @@ raw_hw_bse <- read_delim(filename2, delim = ';', col_names = T, skip = 15)
 raw_hw_idl <- read_delim(filename3, delim = ';', col_names = T, skip = 15)
 
 # Extract the date from the file names
-file_date_sus <- sub('.*-(\\d+)\\.tab', '\\1', '~/Downloads/artifacts/test1.csv-joseph-esprimop957-20230726.tab')
-file_date_bse <- sub('.*-(\\d+)\\.tab', '\\1', '~/Downloads/artifacts/test2.csv-joseph-esprimop957-20230726.tab')
-file_date_idl <- sub('.*-(\\d+)\\.tab', '\\1', '~/Downloads/artifacts/test3.csv-joseph-esprimop957-20230726.tab')
-
+file_date_sus <- sub('.*-(\\d+)\\.tab', '\\1', filename1)
+file_date_bse <- sub('.*-(\\d+)\\.tab', '\\1', filename2)
+file_date_idl <- sub('.*-(\\d+)\\.tab', '\\1', filename3)
 
 # Format date as DD.MM.YYYY
 formatted_date_bse <- format(as.Date(file_date_bse, format = "%Y%m%d"), "%d.%m.%Y")
@@ -146,6 +146,23 @@ head(hw_idl)
 head(hw_sus)
 
 # Save files 
-write.csv2(hw_bse, '~/Downloads/artifacts/hw_bse.csv', row.names = FALSE, quote = FALSE)
-write.csv2(hw_idl, '~/Downloads/artifacts/hw_idl.csv', row.names = FALSE, quote = FALSE)
-write.csv2(hw_sus, '~/Downloads/artifacts/hw_sus.csv', row.names = FALSE, quote = FALSE)
+write.csv2(hw_bse, '~/hw_bse.csv', row.names = FALSE, quote = FALSE)
+write.csv2(hw_idl, '~/hw_idl.csv', row.names = FALSE, quote = FALSE)
+write.csv2(hw_sus, '~/hw_sus.csv', row.names = FALSE, quote = FALSE)
+
+# Preprocessing log files
+
+preprocess_csv_file <- function(filename) {
+  lines <- readLines(filename)
+  for (i in seq_along(lines)) {
+    lines[i] <- gsub("iteration \\d+;", "", lines[i])
+  }
+  writeLines(lines, filename)
+}
+
+input_files <- c("log_sus.csv", "log_baseline.csv", "log_idle.csv")
+
+# Process each input file
+for (file in input_files) {
+  preprocess_csv_file(file)
+}

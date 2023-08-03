@@ -14,7 +14,7 @@
 #You should have received a copy of the GNU General Public License
 #along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-setwd("~/Downloads/Readings/")
+setwd("~/")
 
 getwd()
 # Inputs:
@@ -261,7 +261,6 @@ shortestTestrun <- 1
 shortestTestrunCount <- nrow(powerMeasurement[[1]])
 longestTestrun <- 1
 longestTestrunCount <- nrow(powerMeasurement[[1]])
-
 
 
 # generate results and plots for the testruns
