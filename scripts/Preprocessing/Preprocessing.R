@@ -10,8 +10,8 @@ library(lubridate) # for dates/times
 options(scipen=999) # turn off scientific notation
 
 # set wd
-paste(dirname("~/"), '/', sep = '')
-setwd(dirname("~/"))
+paste(dirname(""), '/', sep = '')
+setwd(dirname(""))
 getwd()
 
 #################
@@ -19,11 +19,11 @@ getwd()
 #################
 
 # load power meter data
-raw_pm_bse <- read_delim('~/testreadings2.csv', delim = ' ', col_names = F) %>% 
+raw_pm_bse <- read_delim('testreadings2.csv', delim = ' ', col_names = F) %>% 
   rename(nanoseconds = X1, watts = X2)
-raw_pm_idl <- read_delim('~/testreadings3.csv', delim = ' ', col_names = F) %>% 
+raw_pm_idl <- read_delim('testreadings3.csv', delim = ' ', col_names = F) %>% 
   rename(nanoseconds = X1, watts = X2)
-raw_pm_sus <- read_delim('~/testreadings1.csv', delim = ' ', col_names = F) %>% 
+raw_pm_sus <- read_delim('testreadings1.csv', delim = ' ', col_names = F) %>% 
   rename(nanoseconds = X1, watts = X2)
 
 # Convert for datetime column
