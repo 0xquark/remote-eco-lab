@@ -10,8 +10,6 @@ library(lubridate) # for dates/times
 options(scipen=999) # turn off scientific notation
 
 # set wd
-paste(dirname(""), '/', sep = '')
-setwd(dirname(""))
 getwd()
 
 #################
