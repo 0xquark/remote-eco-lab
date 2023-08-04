@@ -10,6 +10,8 @@ library(lubridate) # for dates/times
 options(scipen=999) # turn off scientific notation
 
 # set wd
+paste(dirname("/builds/drquark/kecolabtestci"), '/', sep = '')
+setwd(dirname("/builds/drquark/kecolabtestci"))
 getwd()
 
 #################
