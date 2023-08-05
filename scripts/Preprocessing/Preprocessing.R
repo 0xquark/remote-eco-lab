@@ -152,17 +152,20 @@ write.csv2(hw_sus, '~/hw_sus.csv', row.names = FALSE, quote = FALSE)
 
 # Preprocessing log files
 
-preprocess_csv_file <- function(filename) {
-  lines <- readLines(filename)
+preprocess_csv_file <- function(input_filename, output_filename) {
+  lines <- readLines(input_filename)
   for (i in seq_along(lines)) {
     lines[i] <- gsub("iteration \\d+;", "", lines[i])
   }
-  writeLines(lines, filename)
+  writeLines(lines, output_filename)
 }
 
-input_files <- c("log_sus.csv", "log_baseline.csv", "log_idle.csv")
+# Define input and output file paths
+input_files <- c("/builds/drquark/kecolabtestci/log_sus.csv", "/builds/drquark/kecolabtestci/log_baseline.csv", "/builds/drquark/kecolabtestci/log_idle.csv")
+output_files <- c("~/log_sus.csv", "~/log_baseline.csv", "~/log_idle.csv")
 
-# Process each input file
-for (file in input_files) {
-  preprocess_csv_file(file)
+# Process each input file and save to the corresponding output file
+for (i in seq_along(input_files)) {
+  preprocess_csv_file(input_files[i], output_files[i])
 }
+
