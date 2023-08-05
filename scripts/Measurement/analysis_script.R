@@ -52,7 +52,7 @@ functionsLocation <- "analysis_script_functions.R"
 
 #Outputs:
 dataSaveFileName <- "analysis_script_Data.RData"
-outputFileName <- "Report.pdf"
+outputFileName <- "~/Report.pdf"
 graphicsFolder <- "graphics"
 
 #----------------------------
