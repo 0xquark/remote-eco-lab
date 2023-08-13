@@ -1,0 +1,119 @@
+variables:
+  LABPC_IP: "192.168.170.16"
+  RASPI_IP: "185.28.184.20"
+  PM_IP: "192.168.170.1"
+
+build:
+  stage: build
+  image: alpine
+  variables:
+    SSH_PRIVATE_KEY: "$SSH_KEY"
+  before_script:
+    - apk add --no-cache openssh-client
+    - 'which ssh-agent || ( apk add --no-cache openssh-client )'
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - ssh-keyscan -H $RASPI_IP $LABPC_IP >> ~/.ssh/known_hosts
+    - echo $CI_MERGE_REQUEST_TITLE
+  script:
+    - ssh -o StrictHostKeyChecking=no -i $SSH_KEY -J karan@$RASPI_IP karan@$LABPC_IP "
+      flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo &&
+      flatpak install $CI_MERGE_REQUEST_TITLE -y "
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+
+energy_measurement:
+  stage: test
+  image: alpine
+  timeout: 12h
+  variables:
+    SSH_PRIVATE_KEY: "$SSH_KEY"
+  before_script: 
+   - apk add --no-cache openssh-client
+   - 'which ssh-agent || ( apk add --no-cache openssh-client )'
+   - eval $(ssh-agent -s)
+   - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+   - mkdir -p ~/.ssh
+   - chmod 700 ~/.ssh
+   - chmod 600 /builds/drquark/kecolabtestci.tmp/SSH_KEY
+   - ssh-keyscan -H $RASPI_IP $LABPC_IP >> ~/.ssh/known_hosts
+   - scp -o StrictHostKeyChecking=no -r -i  $SSH_KEY -o "ProxyJump=karan@$RASPI_IP" script1.sh script2.sh script3.sh karan@$LABPC_IP:/tmp/
+  script:
+   - export CURRENT_DATE=$(date +%Y%m%d)
+   - ssh -o StrictHostKeyChecking=no -i $SSH_KEY karan@$RASPI_IP "sh -c 'cd /home/karan/feep/tools/GUDEPowerMeter && nohup python3 check_gude_modified.py -i 1 -x 192.168.170.1 >> testreadings1.csv 2>/dev/null &'"
+   - ssh -o StrictHostKeyChecking=no -i $SSH_KEY -J karan@$RASPI_IP karan@$LABPC_IP '
+    nohup collectl -s cdmn -i1 -P --sep 59 -f ~/test1.csv >/dev/null 2>&1 &
+    export DISPLAY=:0 && export TERM=xterm && cd /tmp/ && chmod +x script1.sh && ./script1.sh'
+   - ssh -o StrictHostKeyChecking=no -i $SSH_KEY karan@$RASPI_IP " pkill -f check_gude_modified.py "
+   - ssh -X -o StrictHostKeyChecking=no -i $SSH_KEY karan@$RASPI_IP "sh -c 'cd /home/karan/feep/tools/GUDEPowerMeter && nohup python3 check_gude_modified.py -i 1 -x 192.168.170.1 >> testreadings2.csv 2>/dev/null & '"
+   - ssh -o StrictHostKeyChecking=no -i $SSH_KEY -J karan@$RASPI_IP karan@$LABPC_IP '
+    nohup collectl -s cdmn -i1 -P --sep 59 -f ~/test2.csv >/dev/null 2>&1 &
+    export DISPLAY=:0 && export TERM=xterm && cd /tmp/ && chmod +x script2.sh && ./script2.sh'
+   - ssh -o StrictHostKeyChecking=no -i $SSH_KEY karan@$RASPI_IP " pkill -f check_gude_modified.py "
+   - ssh -o StrictHostKeyChecking=no -i $SSH_KEY karan@$RASPI_IP "sh -c 'cd /home/karan/feep/tools/GUDEPowerMeter && nohup python3 check_gude_modified.py -i 1 -x 192.168.170.1 >> testreadings3.csv 2>/dev/null & '"
+   - ssh -o StrictHostKeyChecking=no -i $SSH_KEY -J karan@$RASPI_IP karan@$LABPC_IP '
+    nohup collectl -s cdmn -i1 -P --sep 59 -f ~/test3.csv >/dev/null 2>&1 &
+    export DISPLAY=:0 && export TERM=xterm && cd /tmp/ && chmod +x script3.sh && ./script3.sh'
+   - ssh -o StrictHostKeyChecking=no -i $SSH_KEY karan@$RASPI_IP " pkill -f check_gude_modified.py "
+   - ssh -o StrictHostKeyChecking=no -i $SSH_KEY -J karan@$RASPI_IP karan@$LABPC_IP "
+    export CURRENT_DATE=$(date +%Y%m%d) && cd ~/ && cp test1.csv-joseph-esprimop957-$CURRENT_DATE.tab.gz ~/test1.csv-joseph-esprimop957.tab.gz"
+   - ssh -o StrictHostKeyChecking=no -i $SSH_KEY -J karan@$RASPI_IP karan@$LABPC_IP "
+    export CURRENT_DATE=$(date +%Y%m%d) && cd ~/ && cp test2.csv-joseph-esprimop957-$CURRENT_DATE.tab.gz ~/test2.csv-joseph-esprimop957.tab.gz"
+   - ssh -o StrictHostKeyChecking=no -i $SSH_KEY -J karan@$RASPI_IP karan@$LABPC_IP "
+    export CURRENT_DATE=$(date +%Y%m%d) && cd ~/ && cp test3.csv-joseph-esprimop957-$CURRENT_DATE.tab.gz ~/test3.csv-joseph-esprimop957.tab.gz"
+   - scp -o StrictHostKeyChecking=no -i $SSH_KEY karan@$RASPI_IP:/home/karan/feep/tools/GUDEPowerMeter/testreadings1.csv testreadings1.csv
+   - scp -o StrictHostKeyChecking=no  -i $SSH_KEY karan@$RASPI_IP:/home/karan/feep/tools/GUDEPowerMeter/testreadings2.csv testreadings2.csv
+   - scp -o StrictHostKeyChecking=no -i $SSH_KEY karan@$RASPI_IP:/home/karan/feep/tools/GUDEPowerMeter/testreadings3.csv testreadings3.csv
+   - scp -o StrictHostKeyChecking=no -r -i  $SSH_KEY -o "ProxyJump=karan@$RASPI_IP" karan@$LABPC_IP:~/test1.csv-joseph-esprimop957.tab.gz test1.csv-joseph-esprimop957-$CURRENT_DATE.tab.gz
+   - scp -o StrictHostKeyChecking=no -r -i  $SSH_KEY -o "ProxyJump=karan@$RASPI_IP" karan@$LABPC_IP:~/test2.csv-joseph-esprimop957.tab.gz test2.csv-joseph-esprimop957-$CURRENT_DATE.tab.gz
+   - scp -o StrictHostKeyChecking=no -r -i  $SSH_KEY -o "ProxyJump=karan@$RASPI_IP" karan@$LABPC_IP:~/test3.csv-joseph-esprimop957.tab.gz test3.csv-joseph-esprimop957-$CURRENT_DATE.tab.gz
+   - scp -o StrictHostKeyChecking=no -r -i  $SSH_KEY -o "ProxyJump=karan@$RASPI_IP" karan@$LABPC_IP:~/log_sus.csv log_sus.csv
+   - scp -o StrictHostKeyChecking=no -r -i  $SSH_KEY -o "ProxyJump=karan@$RASPI_IP" karan@$LABPC_IP:~/log_baseline.csv log_baseline.csv
+   - scp -o StrictHostKeyChecking=no -r -i  $SSH_KEY -o "ProxyJump=karan@$RASPI_IP" karan@$LABPC_IP:~/log_idle.csv log_idle.csv
+   - ssh -o StrictHostKeyChecking=no -i $SSH_KEY karan@$RASPI_IP "cd /home/karan/feep/tools/GUDEPowerMeter && rm testreadings1.csv testreadings2.csv testreadings3.csv"
+   - ssh -o StrictHostKeyChecking=no -i $SSH_KEY -J karan@$RASPI_IP karan@$LABPC_IP ' export CURRENT_DATE=$(date +%Y%m%d) && rm log_sus.csv log_baseline.csv log_idle.csv test1.csv-joseph-esprimop957-$CURRENT_DATE.tab.gz test2.csv-joseph-esprimop957-$CURRENT_DATE.tab.gz test3.csv-joseph-esprimop957-$CURRENT_DATE.tab.gz test1.csv-joseph-esprimop957.tab.gz test2.csv-joseph-esprimop957.tab.gz test3.csv-joseph-esprimop957.tab.gz && cd /tmp/  && rm script1.sh script2.sh script3.sh'
+  artifacts:
+    paths:
+      - testreadings1.csv
+      - testreadings2.csv
+      - testreadings3.csv
+      - "test1.csv-joseph-esprimop957-*.tab.gz"
+      - "test2.csv-joseph-esprimop957-*.tab.gz"
+      - "test3.csv-joseph-esprimop957-*.tab.gz"
+      - log_sus.csv
+      - log_baseline.csv
+      - log_idle.csv
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+
+result:
+  stage: deploy
+  image: rocker/tidyverse
+  dependencies:
+    - energy_measurement
+  before_script:
+    - apt-get update -qq
+    - apt-get install -y libxml2-dev libcurl4-openssl-dev libssl-dev git
+    - apt-get install -y texlive-full
+  script:
+  - export CURRENT_DATE=$(date +%Y%m%d)
+  - gunzip test1.csv-joseph-esprimop957-$CURRENT_DATE.tab.gz
+  - gunzip test2.csv-joseph-esprimop957-$CURRENT_DATE.tab.gz
+  - gunzip test3.csv-joseph-esprimop957-$CURRENT_DATE.tab.gz
+  - R -e "install.packages(c('tidyverse', 'lubridate', 'psych', 'rmarkdown', 'rjson', 'readr', 'reshape2', 'tinytex'), repos='http://cran.rstudio.com/')"
+  - git clone https://invent.kde.org/teams/eco/remote-eco-lab.git
+  - cd remote-eco-lab/scripts/Preprocessing
+  - cp Preprocessing.R ~
+  - cd ../Measurement 
+  - cp analysis_script.R analysis_script_Report.Rmd analysis_script_functions.R ~/
+  - Rscript ~/Preprocessing.R test1.csv-joseph-esprimop957-$CURRENT_DATE.tab test2.csv-joseph-esprimop957-$CURRENT_DATE.tab test3.csv-joseph-esprimop957-$CURRENT_DATE.tab
+  - ls
+  - Rscript ~/analysis_script.R
+  - cp ~/Report.pdf $CI_PROJECT_DIR/
+  artifacts:
+    paths:
+     - Report.pdf
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
