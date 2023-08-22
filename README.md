@@ -58,7 +58,7 @@ Prepare different usage scenario files on your system.
 - Create a new branch in your fork/clone and add the usage scenario scripts.
 - Push the changes and initiate a merge request, using the application package name as the title. For example, `org.kde.kate`.
 ### Review and Approval
-- Sit back and relax while we review our proposed application for any potential security risks.
+- Sit back and relax while we review your proposed application for any potential security risks.
 ### CI/CD Pipeline Execution
 - Upon approval, the CI/CD pipeline will be triggered automatically.
 The pipeline comprises the following stages:
