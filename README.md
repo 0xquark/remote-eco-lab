@@ -1,5 +1,4 @@
 # KEcoLab
-
 Welcome to the KEcoLab GitLab repository! This project enables you to measure energy consumption of your software remotely using a CI/CD pipeline. Follow the steps below to get started.
 ## Table of Contents
 - Introduction
@@ -22,7 +21,6 @@ For further details on measuring energy consumption of software, please refer to
 This will help you get started with measuring your software energy consumption
 ### Pre-requistes 
 Before diving in, ensure you have the following prerequisites in place:
-
  - Application Package Name (For eg. For kate i.e org.kde.kate )
  - Usage Scenario Scripts ( log_sus.sh, log_baseline.sh, log_idle.sh ) : To create these scripts, follow the guidelines provided in [How to measure your software](https://eco.kde.org/handbook/#a-how-to-measure-your-software). Various tools, such as [KdeEcoTest](https://invent.kde.org/teams/eco/feep/-/tree/master/tools/KdeEcoTest), [Xdotool](https://github.com/jordansissel/xdotool) etc, can be used for script creation.
  - Basic Git knowledge
@@ -59,7 +57,6 @@ Prepare different usage scenario files on your system.
 - Fork or clone the Remote Eco Lab repository to your GitLab account.
 - Create a new branch in your fork/clone and add the usage scenario scripts.
 - Push the changes and initiate a merge request, using the application package name as the title. For example, `org.kde.kate`.
-
 ### Review and Approval
 - Sit back and relax while we review our proposed application for any potential security risks.
 ### CI/CD Pipeline Execution
@@ -70,7 +67,7 @@ The pipeline comprises the following stages:
   - Result: The energy measurement results obtained are used as input for OSCAR (Open-source Software Consumption Analysis in R) analysis. OSCAR generates a report file summarizing energy consumption measurements and provides visualizations, available as an artifact.
 
 ## Accessing the results:
- ### Downloading Artifacts and Analyzing Results with OSCAR  :
+### Downloading Artifacts and Analyzing Results with OSCAR  :
    - Energy measurement artifacts can be found at [Job Artifacts](https://invent.kde.org/teams/eco/remote-eco-lab/-/artifacts) under the energy_measurement stage.
    - The final Energy measurement report is also available at [Job Artifacts](https://invent.kde.org/teams/eco/remote-eco-lab/-/artifacts) under the Result stage.
    - Utilize the energy measurement report to analyze energy consumption during various actions and leverage this information to enhance your application's energy efficiency or to pursue eco certification.
