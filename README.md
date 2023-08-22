@@ -21,7 +21,7 @@ For further details on measuring energy consumption of software, please refer to
 This will help you get started with measuring your software energy consumption
 ### Pre-requistes 
 Before diving in, ensure you have the following prerequisites in place:
- - Application Package Name (For eg. For kate i.e org.kde.kate )
+ - Application Package Name (e.g., for "kate", use "org.kde.kate")
  - Usage Scenario Scripts ( log_sus.sh, log_baseline.sh, log_idle.sh ) : To create these scripts, follow the guidelines provided in [How to measure your software](https://eco.kde.org/handbook/#a-how-to-measure-your-software). Various tools, such as [KdeEcoTest](https://invent.kde.org/teams/eco/feep/-/tree/master/tools/KdeEcoTest), [Xdotool](https://github.com/jordansissel/xdotool) etc. can be used for script creation.
  - Basic Git knowledge
 
