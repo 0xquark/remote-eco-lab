@@ -6,6 +6,8 @@ variables:
 build:
   stage: build
   image: alpine
+  tags:
+    - EcoLabWorker
   variables:
     SSH_PRIVATE_KEY: "$SSH_KEY"
   before_script:
@@ -28,6 +30,8 @@ energy_measurement:
   stage: test
   image: alpine
   timeout: 12h
+  tags:
+    - EcoLabWorker
   variables:
     SSH_PRIVATE_KEY: "$SSH_KEY"
   before_script: 
