@@ -16,13 +16,13 @@ Welcome to the KEcoLab GitLab repository! This project enables you to measure en
 
 ## Introduction 
 The Remote Eco Lab project aims to provide a streamlined process for measuring software energy consumption remotely using a CI/CD pipeline. By automating the measurement process and integrating with the OSCAR tool, developers can make informed decisions to improve code efficiency and work towards software eco-certification.
-For further details on measuring energy consumption of software, please refer to : eco.kde.org/handbook
+For further details on measuring energy consumption of software, please refer to : [eco.kde.org/handbook](https://eco.kde.org/handbook/)
 ## Getting Started
 This will help you get started with measuring your software energy consumption
 ### Pre-requistes 
 Before diving in, ensure you have the following prerequisites in place:
  - Application Package Name (For eg. For kate i.e org.kde.kate )
- - Usage Scenario Scripts ( log_sus.sh, log_baseline.sh, log_idle.sh ) : To create these scripts, follow the guidelines provided in [How to measure your software](https://eco.kde.org/handbook/#a-how-to-measure-your-software). Various tools, such as [KdeEcoTest](https://invent.kde.org/teams/eco/feep/-/tree/master/tools/KdeEcoTest), [Xdotool](https://github.com/jordansissel/xdotool) etc, can be used for script creation.
+ - Usage Scenario Scripts ( log_sus.sh, log_baseline.sh, log_idle.sh ) : To create these scripts, follow the guidelines provided in [How to measure your software](https://eco.kde.org/handbook/#a-how-to-measure-your-software). Various tools, such as [KdeEcoTest](https://invent.kde.org/teams/eco/feep/-/tree/master/tools/KdeEcoTest), [Xdotool](https://github.com/jordansissel/xdotool) etc. can be used for script creation.
  - Basic Git knowledge
 
 ### Format of Input Usage Scripts:
