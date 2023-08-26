@@ -8,7 +8,6 @@ build:
   tags:
     - EcoLabWorker
   before_script:
-    - ssh-keyscan -H $LABPC_IP >> ~/.ssh/known_hosts
     - echo $CI_MERGE_REQUEST_TITLE
   script:
     - ssh -o StrictHostKeyChecking=no -i ~/.ssh/kecolab karan@$LABPC_IP "
@@ -24,7 +23,6 @@ energy_measurement:
   tags:
     - EcoLabWorker
   before_script: 
-   - ssh-keyscan -H $LABPC_IP >> ~/.ssh/known_hosts
    - scp -o StrictHostKeyChecking=no -r -i  ~/.ssh/kecolab -o script1.sh script2.sh script3.sh karan@$LABPC_IP:/tmp/
   script:
    - export CURRENT_DATE=$(date +%Y%m%d)
