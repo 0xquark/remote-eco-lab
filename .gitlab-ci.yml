@@ -8,7 +8,6 @@ build:
   tags:
     - EcoLabWorker
   before_script:
-    - chmod 700 ~/.ssh
     - ssh-keyscan -H $LABPC_IP >> ~/.ssh/known_hosts
     - echo $CI_MERGE_REQUEST_TITLE
   script:
