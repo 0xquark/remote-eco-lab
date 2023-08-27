@@ -26,17 +26,17 @@ energy_measurement:
    - scp -o StrictHostKeyChecking=no -r -i  ~/.ssh/kecolab script1.sh script2.sh script3.sh karan@$LABPC_IP:/tmp/
   script:
    - export CURRENT_DATE=$(date +%Y%m%d)
-   - cd /home/gitlab-runner/GUDEPowerMeter && nohup python3 check_gude_modified.py -i 1 -x 192.168.170.1 >> testreadings1.csv 2>/dev/null &
+   - cd /home/gitlab-runner/GUDEPowerMeter && nohup python3 check_gude_modified.py -i 1 -x 192.168.170.3 >> testreadings1.csv 2>/dev/null &
    - ssh -o StrictHostKeyChecking=no -i ~/.ssh/kecolab karan@$LABPC_IP '
     nohup collectl -s cdmn -i1 -P --sep 59 -f ~/test1.csv >/dev/null 2>&1 &
     export DISPLAY=:0 && export TERM=xterm && cd /tmp/ && chmod +x script1.sh && ./script1.sh'
    - pkill -f check_gude_modified.py
-   - cd /home/gitlab-runner/GUDEPowerMeter && nohup python3 check_gude_modified.py -i 1 -x 192.168.170.1 >> testreadings2.csv 2>/dev/null & 
+   - cd /home/gitlab-runner/GUDEPowerMeter && nohup python3 check_gude_modified.py -i 1 -x 192.168.170.3 >> testreadings2.csv 2>/dev/null & 
    - ssh -o StrictHostKeyChecking=no -i ~/.ssh/kecolab karan@$LABPC_IP '
     nohup collectl -s cdmn -i1 -P --sep 59 -f ~/test2.csv >/dev/null 2>&1 &
     export DISPLAY=:0 && export TERM=xterm && cd /tmp/ && chmod +x script2.sh && ./script2.sh'
    - pkill -f check_gude_modified.py
-   - cd /home/gitlab-runner/GUDEPowerMeter && nohup python3 check_gude_modified.py -i 1 -x 192.168.170.1 >> testreadings3.csv 
+   - cd /home/gitlab-runner/GUDEPowerMeter && nohup python3 check_gude_modified.py -i 1 -x 192.168.170.3 >> testreadings3.csv 
    - ssh -o StrictHostKeyChecking=no -i ~/.ssh/kecolab karan@$LABPC_IP '
     nohup collectl -s cdmn -i1 -P --sep 59 -f ~/test3.csv >/dev/null 2>&1 &
     export DISPLAY=:0 && export TERM=xterm && cd /tmp/ && chmod +x script3.sh && ./script3.sh'
