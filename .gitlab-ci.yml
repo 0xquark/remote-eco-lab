@@ -1,6 +1,6 @@
 variables:
   LABPC_IP: "192.168.170.16"
-  PM_IP: "192.168.170.1"
+  PM_IP: "192.168.170.3"
 
 build:
   stage: build
@@ -36,7 +36,7 @@ energy_measurement:
     nohup collectl -s cdmn -i1 -P --sep 59 -f ~/test2.csv >/dev/null 2>&1 &
     export DISPLAY=:0 && export TERM=xterm && cd /tmp/ && chmod +x script2.sh && ./script2.sh'
    - pkill -f check_gude_modified.py
-   - cd /home/gitlab-runner/GUDEPowerMeter && nohup python3 check_gude_modified.py -i 1 -x 192.168.170.3 >> testreadings3.csv 
+   - cd /home/gitlab-runner/GUDEPowerMeter && nohup python3 check_gude_modified.py -i 1 -x 192.168.170.3 >> testreadings3.csv 2>/dev/null &
    - ssh -o StrictHostKeyChecking=no -i ~/.ssh/kecolab karan@$LABPC_IP '
     nohup collectl -s cdmn -i1 -P --sep 59 -f ~/test3.csv >/dev/null 2>&1 &
     export DISPLAY=:0 && export TERM=xterm && cd /tmp/ && chmod +x script3.sh && ./script3.sh'
