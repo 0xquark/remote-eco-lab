@@ -26,7 +26,7 @@ energy_measurement:
    - scp -o StrictHostKeyChecking=no -r -i  ~/.ssh/kecolab script1.sh script2.sh script3.sh karan@$LABPC_IP:/tmp/
   script:
    - export CURRENT_DATE=$(date +%Y%m%d)
-   - cd /home/karan/feep/tools/GUDEPowerMeter && nohup python3 check_gude_modified.py -i 1 -x 192.168.170.1 >> testreadings1.csv 2>/dev/null &
+   - cd /home/gitlab-runner/GUDEPowerMeter && nohup python3 check_gude_modified.py -i 1 -x 192.168.170.1 >> testreadings1.csv 2>/dev/null &
    - ssh -o StrictHostKeyChecking=no -i ~/.ssh/kecolab karan@$LABPC_IP '
     nohup collectl -s cdmn -i1 -P --sep 59 -f ~/test1.csv >/dev/null 2>&1 &
     export DISPLAY=:0 && export TERM=xterm && cd /tmp/ && chmod +x script1.sh && ./script1.sh'
