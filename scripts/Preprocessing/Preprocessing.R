@@ -10,8 +10,8 @@ library(lubridate) # for dates/times
 options(scipen=999) # turn off scientific notation
 
 # set wd
-paste(dirname("/builds/drquark/kecolabtestci//"), '/', sep = '')
-setwd(dirname("/builds/drquark/kecolabtestci//"))
+paste(dirname("/builds/teams/eco/remote-eco-lab//"), '/', sep = '')
+setwd(dirname("/builds/teams/eco/remote-eco-lab//"))
 getwd()
 
 #################
@@ -161,7 +161,7 @@ preprocess_csv_file <- function(input_filename, output_filename) {
 }
 
 # Define input and output file paths
-input_files <- c("/builds/drquark/kecolabtestci/log_sus.csv", "/builds/drquark/kecolabtestci/log_baseline.csv", "/builds/drquark/kecolabtestci/log_idle.csv")
+input_files <- c("/builds/teams/eco/remote-eco-lab/log_sus.csv", "/builds/teams/eco/remote-eco-lab/log_baseline.csv", "/builds/teams/eco/remote-eco-lab/log_idle.csv")
 output_files <- c("~/log_sus.csv", "~/log_baseline.csv", "~/log_idle.csv")
 
 # Process each input file and save to the corresponding output file
