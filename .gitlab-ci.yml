@@ -81,6 +81,7 @@ result:
     - apt-get update -qq
     - apt-get install -y libxml2-dev libcurl4-openssl-dev libssl-dev git
     - apt-get install -y texlive-full
+    - echo $CI_PROJECT_DIR
   script:
   - export CURRENT_DATE=$(date +%Y%m%d)
   - gunzip test1.csv-joseph-esprimop957-$CURRENT_DATE.tab.gz
