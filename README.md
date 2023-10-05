@@ -55,7 +55,7 @@ Note: Ensure filenames match exactly as specified above, and the format precisel
 First, prepare the three usage scenario scripts on your system.
 ### Creating a Merge Request
 - Fork or clone the Remote Eco Lab repository to your GitLab account.
-- Create a new branch in your fork/clone and add the usage scenario scripts.
+- Create a new branch in your fork/clone and add the usage scenario scripts in the path `scripts/test_scripts/application_package_name/` (for example, scripts/test_scripts/org.kde.kate/log_sus.sh).
 - Push the changes and initiate a merge request, using the application package name as the title. For example, `org.kde.kate`.
 ### Review and Approval
 - Sit back and relax while your proposed application is reviewed for any potential security risks.

@@ -28,7 +28,7 @@ energy_measurement:
     - EcoLabWorker
   before_script: 
   # Copy Usage scenario scripts from test_scripts dir to the LABPC
-   - scp -o StrictHostKeyChecking=no -r -i  ~/.ssh/kecolab scripts/test_scripts/script1.sh scripts/test_scripts/script2.sh scripts/test_scripts/script3.sh karan@$LABPC_IP:/tmp/
+   - scp -o StrictHostKeyChecking=no -r -i  ~/.ssh/kecolab scripts/test_scripts/$CI_MERGE_REQUEST_TITLE/log_sus.sh scripts/test_scripts/$CI_MERGE_REQUEST_TITLE/log_baseline.sh scripts/test_scripts/$CI_MERGE_REQUEST_TITLE/log_idle.sh karan@$LABPC_IP:/tmp/
   script:
    - export CURRENT_DATE=$(date +%Y%m%d)
    # Start taking PM Readings (Script 1)
@@ -36,7 +36,7 @@ energy_measurement:
    # Start taking Hardware readings using collectl (for script 1)
    - ssh -o StrictHostKeyChecking=no -i ~/.ssh/kecolab karan@$LABPC_IP '
     nohup collectl -s cdmn -i1 -P --sep 59 -f ~/test1.csv >/dev/null 2>&1 &
-    export DISPLAY=:0 && export TERM=xterm && cd /tmp/ && chmod +x script1.sh && ./script1.sh'
+    export DISPLAY=:0 && export TERM=xterm && cd /tmp/ && chmod +x log_sus.sh && ./log_sus.sh'
    # Kill the Process taking PM Readings
    - pkill -f check_gude_modified.py
   # Start taking PM Readings (Script 2)
@@ -44,14 +44,14 @@ energy_measurement:
   # Start taking Hardware readings using collectl (for script 2)
    - ssh -o StrictHostKeyChecking=no -i ~/.ssh/kecolab karan@$LABPC_IP '
     nohup collectl -s cdmn -i1 -P --sep 59 -f ~/test2.csv >/dev/null 2>&1 &
-    export DISPLAY=:0 && export TERM=xterm && cd /tmp/ && chmod +x script2.sh && ./script2.sh'
+    export DISPLAY=:0 && export TERM=xterm && cd /tmp/ && chmod +x log_baseline.sh && ./log_baseline.sh'
    - pkill -f check_gude_modified.py
   # Start taking PM Readings (Script 3)
    - cd /home/gitlab-runner/GUDEPowerMeter && nohup python3 check_gude_modified.py -i 1 -x 192.168.170.3 >> testreadings3.csv 2>/dev/null &
   # Start taking Hardware readings using collectl (for script 3)
    - ssh -o StrictHostKeyChecking=no -i ~/.ssh/kecolab karan@$LABPC_IP '
     nohup collectl -s cdmn -i1 -P --sep 59 -f ~/test3.csv >/dev/null 2>&1 &
-    export DISPLAY=:0 && export TERM=xterm && cd /tmp/ && chmod +x script3.sh && ./script3.sh'
+    export DISPLAY=:0 && export TERM=xterm && cd /tmp/ && chmod +x log_idle.sh && ./log_idle.sh'
    - pkill -f check_gude_modified.py
    # Export collectl readings using Current Date in the filename
    - ssh -o StrictHostKeyChecking=no -i ~/.ssh/kecolab karan@$LABPC_IP "
