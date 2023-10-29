@@ -28,7 +28,7 @@ energy_measurement:
     - EcoLabWorker
   before_script: 
   # Copy Usage scenario scripts from test_scripts dir to the LABPC
-   - scp -o StrictHostKeyChecking=no -r -i  ~/.ssh/kecolab scripts/test_scripts/$CI_MERGE_REQUEST_TITLE/log_sus.sh scripts/test_scripts/$CI_MERGE_REQUEST_TITLE/log_baseline.sh scripts/test_scripts/$CI_MERGE_REQUEST_TITLE/log_idle.sh karan@$LABPC_IP:/tmp/
+   - scp -o StrictHostKeyChecking=no -r -i  ~/.ssh/kecolab scripts/test_scripts/$CI_MERGE_REQUEST_TITLE/* karan@$LABPC_IP:/tmp/
   script:
    - export CURRENT_DATE=$(date +%Y%m%d)
    # Start taking PM Readings (Script 1)
