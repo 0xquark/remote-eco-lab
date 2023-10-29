@@ -20,7 +20,9 @@ For further details on measuring the energy consumption of software, please refe
 ## Getting Started
 This will help you get started with measuring your software energy consumption
 
-If you have any trouble while performing any of the below steps, refer to this tutorial video for help: ![KEcolab-Tutorial](KEcolab-Tutorial.mp4) 
+If you have any trouble while performing any of the below steps, refer to this tutorial video for help: 
+
+![KEcolab-Tutorial](KEcolab-Tutorial.mp4) 
 
 ### Pre-requistes 
 Ensure you have the following prerequisites in place:
