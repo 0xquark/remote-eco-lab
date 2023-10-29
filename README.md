@@ -19,11 +19,18 @@ The Remote Eco Lab project aims to provide a streamlined process for measuring s
 For further details on measuring the energy consumption of software, please refer to: [eco.kde.org/handbook](https://eco.kde.org/handbook/)
 ## Getting Started
 This will help you get started with measuring your software energy consumption
+
+If you have any trouble while performing any of the below steps, refer to this tutorial video for help: 
+
+![KEcolab-Tutorial](KEcolab-Tutorial.mp4) 
+
 ### Pre-requistes 
 Ensure you have the following prerequisites in place:
  - Application Package Name (e.g., for "kate", use "org.kde.kate")
  - Usage Scenario Scripts (Standard Usage Scenario, Idle Scenario, Baseline Scenario) : To create these scripts, follow the guidelines provided in [How to measure your software](https://eco.kde.org/handbook/#a-how-to-measure-your-software). Various tools, such as [KdeEcoTest](https://invent.kde.org/teams/eco/feep/-/tree/master/tools/KdeEcoTest), [Xdotool](https://github.com/jordansissel/xdotool) etc. can be used for script creation.
  - Basic Git knowledge
+
+Note: In case you need to add any external files required for testing of your software, you can put them at this location `scripts/test_scripts/application_package_name/`. These files will be saved in the `/tmp/` directory on the KEcolab system.
 
 ### Format of Input Usage Scripts:
  - Ensure your input scripts adhere to the following format:
