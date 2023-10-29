@@ -19,6 +19,9 @@ The Remote Eco Lab project aims to provide a streamlined process for measuring s
 For further details on measuring the energy consumption of software, please refer to: [eco.kde.org/handbook](https://eco.kde.org/handbook/)
 ## Getting Started
 This will help you get started with measuring your software energy consumption
+
+If you have any trouble while performing any of the below steps, refer to this tutorial video for help: ![KEcolab-Tutorial](KEcolab-Tutorial.mp4) 
+
 ### Pre-requistes 
 Ensure you have the following prerequisites in place:
  - Application Package Name (e.g., for "kate", use "org.kde.kate")
