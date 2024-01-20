@@ -17,7 +17,7 @@ build:
       flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo &&
       flatpak install --user $CI_MERGE_REQUEST_TITLE -y "
   rules:
-    - if: $CI_COMMIT_BRANCH == "master"
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
 
 # Energy measurement stage
 energy_measurement:
