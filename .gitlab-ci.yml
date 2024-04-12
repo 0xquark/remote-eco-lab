@@ -1,123 +1,16 @@
+include:
+  - local: pipelines/.test_energy_measurement.yaml
+  - local: pipelines/.energy_measurement.yaml
+
 # Define environment variables
 variables:
   LABPC_IP: "192.168.170.16" # IP address of the LABPC
   PM_IP: "192.168.170.3" # IP address of the PM (Power Meter)
 
-# Build stage
-build:
-  stage: build
-  image: alpine
-  tags:
-    - EcoLabWorker
-  before_script:
-    - echo $CI_MERGE_REQUEST_TITLE
-  script:
-  # Flatpak command for installing test application based on merge request title from flathub
-    - ssh -o StrictHostKeyChecking=no -i ~/.ssh/kecolab karan@$LABPC_IP "
-      flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo &&
-      flatpak install --user $CI_MERGE_REQUEST_TITLE -y "
-  rules:
-    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
-
-# Energy measurement stage
-energy_measurement:
-  stage: test
-  image: alpine
-  timeout: 12h
-  tags:
-    - EcoLabWorker
-  before_script: 
-  # Copy Usage scenario scripts from test_scripts dir to the LABPC
-   - scp -o StrictHostKeyChecking=no -r -i  ~/.ssh/kecolab scripts/test_scripts/$CI_MERGE_REQUEST_TITLE/* karan@$LABPC_IP:/tmp/
-  script:
-   - export CURRENT_DATE=$(date +%Y%m%d)
-   # Start taking PM Readings (Script 1)
-   - cd /home/gitlab-runner/GUDEPowerMeter && nohup python3 check_gude_modified.py -i 1 -x 192.168.170.3 >> ~/testreadings1.csv 2>/dev/null &
-   # Start taking Hardware readings using collectl (for script 1)
-   - ssh -o StrictHostKeyChecking=no -i ~/.ssh/kecolab karan@$LABPC_IP '
-    nohup collectl -s cdmn -i1 -P --sep 59 -f ~/test1.csv >/dev/null 2>&1 &
-    export DISPLAY=:0 && export TERM=xterm && cd /tmp/ && chmod +x log_sus.sh && ./log_sus.sh'
-   # Kill the Process taking PM Readings
-   - pkill -f check_gude_modified.py
-  # Start taking PM Readings (Script 2)
-   - cd /home/gitlab-runner/GUDEPowerMeter && nohup python3 check_gude_modified.py -i 1 -x 192.168.170.3 >> ~/testreadings2.csv 2>/dev/null & 
-  # Start taking Hardware readings using collectl (for script 2)
-   - ssh -o StrictHostKeyChecking=no -i ~/.ssh/kecolab karan@$LABPC_IP '
-    nohup collectl -s cdmn -i1 -P --sep 59 -f ~/test2.csv >/dev/null 2>&1 &
-    export DISPLAY=:0 && export TERM=xterm && cd /tmp/ && chmod +x log_baseline.sh && ./log_baseline.sh'
-   - pkill -f check_gude_modified.py
-  # Start taking PM Readings (Script 3)
-   - cd /home/gitlab-runner/GUDEPowerMeter && nohup python3 check_gude_modified.py -i 1 -x 192.168.170.3 >> ~/testreadings3.csv 2>/dev/null &
-  # Start taking Hardware readings using collectl (for script 3)
-   - ssh -o StrictHostKeyChecking=no -i ~/.ssh/kecolab karan@$LABPC_IP '
-    nohup collectl -s cdmn -i1 -P --sep 59 -f ~/test3.csv >/dev/null 2>&1 &
-    export DISPLAY=:0 && export TERM=xterm && cd /tmp/ && chmod +x log_idle.sh && ./log_idle.sh'
-   - pkill -f check_gude_modified.py
-   # Export collectl readings using Current Date in the filename
-   - ssh -o StrictHostKeyChecking=no -i ~/.ssh/kecolab karan@$LABPC_IP "
-    export CURRENT_DATE=$(date +%Y%m%d) && cd ~/ && cp test1.csv-joseph-esprimop957-$CURRENT_DATE.tab.gz ~/test1.csv-joseph-esprimop957.tab.gz"
-   - ssh -o StrictHostKeyChecking=no -i ~/.ssh/kecolab karan@$LABPC_IP "
-    export CURRENT_DATE=$(date +%Y%m%d) && cd ~/ && cp test2.csv-joseph-esprimop957-$CURRENT_DATE.tab.gz ~/test2.csv-joseph-esprimop957.tab.gz"
-   - ssh -o StrictHostKeyChecking=no -i ~/.ssh/kecolab karan@$LABPC_IP "
-    export CURRENT_DATE=$(date +%Y%m%d) && cd ~/ && cp test3.csv-joseph-esprimop957-$CURRENT_DATE.tab.gz ~/test3.csv-joseph-esprimop957.tab.gz"
-   # Export Power Meter Readings
-   - cp ~/testreadings1.csv testreadings1.csv
-   - cp ~/testreadings2.csv testreadings2.csv
-   - cp ~/testreadings3.csv testreadings3.csv
-   # Export all the Raw Power and Hardware Readings to Artifacts
-   - scp -o StrictHostKeyChecking=no -r -i  ~/.ssh/kecolab karan@$LABPC_IP:~/test1.csv-joseph-esprimop957.tab.gz test1.csv-joseph-esprimop957-$CURRENT_DATE.tab.gz
-   - scp -o StrictHostKeyChecking=no -r -i  ~/.ssh/kecolab karan@$LABPC_IP:~/test2.csv-joseph-esprimop957.tab.gz test2.csv-joseph-esprimop957-$CURRENT_DATE.tab.gz
-   - scp -o StrictHostKeyChecking=no -r -i  ~/.ssh/kecolab karan@$LABPC_IP:~/test3.csv-joseph-esprimop957.tab.gz test3.csv-joseph-esprimop957-$CURRENT_DATE.tab.gz
-   - scp -o StrictHostKeyChecking=no -r -i  ~/.ssh/kecolab karan@$LABPC_IP:~/log_sus.csv log_sus.csv
-   - scp -o StrictHostKeyChecking=no -r -i  ~/.ssh/kecolab karan@$LABPC_IP:~/log_baseline.csv log_baseline.csv
-   - scp -o StrictHostKeyChecking=no -r -i  ~/.ssh/kecolab karan@$LABPC_IP:~/log_idle.csv log_idle.csv
-   # Remove all the logs 
-   - cd ~/ && rm testreadings1.csv testreadings2.csv testreadings3.csv
-   - ssh -o StrictHostKeyChecking=no -i ~/.ssh/kecolab karan@$LABPC_IP ' export CURRENT_DATE=$(date +%Y%m%d) && rm log_sus.csv log_baseline.csv log_idle.csv test1.csv-joseph-esprimop957-$CURRENT_DATE.tab.gz test2.csv-joseph-esprimop957-$CURRENT_DATE.tab.gz test3.csv-joseph-esprimop957-$CURRENT_DATE.tab.gz test1.csv-joseph-esprimop957.tab.gz test2.csv-joseph-esprimop957.tab.gz test3.csv-joseph-esprimop957.tab.gz && cd /tmp/  && rm log_sus.sh log_baseline.sh log_idle.sh'
-  artifacts:
-    paths:
-      - testreadings1.csv
-      - testreadings2.csv
-      - testreadings3.csv
-      - "test1.csv-joseph-esprimop957-*.tab.gz"
-      - "test2.csv-joseph-esprimop957-*.tab.gz"
-      - "test3.csv-joseph-esprimop957-*.tab.gz"
-      - log_sus.csv
-      - log_baseline.csv
-      - log_idle.csv
-  rules:
-    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
-
-# Result Stage (To Generate Energy Measurement Report)
-result:
-  stage: deploy
-  image: rocker/tidyverse
-  dependencies:
-    # Use Artifacts from Previous stage
-    - energy_measurement
-  before_script:
-    - apt-get update -qq
-    - apt-get install -y libxml2-dev libcurl4-openssl-dev libssl-dev git
-    - apt-get install -y texlive-full
-    - echo $CI_PROJECT_DIR
-  script:
-  - export CURRENT_DATE=$(date +%Y%m%d)
-  - gunzip test1.csv-joseph-esprimop957-$CURRENT_DATE.tab.gz
-  - gunzip test2.csv-joseph-esprimop957-$CURRENT_DATE.tab.gz
-  - gunzip test3.csv-joseph-esprimop957-$CURRENT_DATE.tab.gz
-  - R -e "install.packages(c('tidyverse', 'lubridate', 'psych', 'rmarkdown', 'rjson', 'readr', 'reshape2', 'tinytex'), repos='http://cran.rstudio.com/')"
-  - git clone https://invent.kde.org/teams/eco/remote-eco-lab.git
-  - cd remote-eco-lab/scripts/Preprocessing
-  - cp Preprocessing.R ~
-  - cd ../Measurement 
-  - cp analysis_script.R analysis_script_Report.Rmd analysis_script_functions.R ~/
-  # Preprocess Raw data for OSCAR Script
-  - Rscript ~/Preprocessing.R test1.csv-joseph-esprimop957-$CURRENT_DATE.tab test2.csv-joseph-esprimop957-$CURRENT_DATE.tab test3.csv-joseph-esprimop957-$CURRENT_DATE.tab
-  # Run OSCAR Analysis script to generate a report
-  - Rscript ~/analysis_script.R
-  - cp ~/Report.pdf $CI_PROJECT_DIR/
-  artifacts:
-    paths:
-     - Report.pdf
-  rules:
-    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+stages:
+  - test-build
+  - test-energy_measurement
+  - test-result
+  - build
+  - energy_measurement
+  - result
