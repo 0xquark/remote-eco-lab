@@ -119,7 +119,7 @@ result:
   - cd ../Measurement 
   - cp analysis_script.R analysis_script_Report.Rmd analysis_script_functions.R ~/
   # Preprocess Raw data for OSCAR Script
-  - Rscript ~/Preprocessing.R test1.csv-joseph-esprimop957-$CURRENT_DATE.tab test2.csv-joseph-esprimop957-$CURRENT_DATE.tab test3.csv-joseph-esprimop957-$CURRENT_DATE.tab $CI_PROJECT_DIR
+  - Rscript ~/Preprocessing.R test1.csv-joseph-esprimop957-$CURRENT_DATE.tab test2.csv-joseph-esprimop957-$CURRENT_DATE.tab test3.csv-joseph-esprimop957-$CURRENT_DATE.tab
   # Run OSCAR Analysis script to generate a report
   - Rscript ~/analysis_script.R
   - cp ~/Report.pdf $CI_PROJECT_DIR/
