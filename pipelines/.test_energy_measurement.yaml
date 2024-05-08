@@ -96,7 +96,7 @@ test-energy_measurement:
 # Result Stage (To Generate Energy Measurement Report)
 test-result:
   stage: test-result
-  image: rocker/tidyverse
+  image: rocker/r-bspm:22.04
   dependencies:
     # Use Artifacts from Previous stage
     - test-energy_measurement
@@ -104,13 +104,15 @@ test-result:
     - apt-get update -qq
     - apt-get install -y libxml2-dev libcurl4-openssl-dev libssl-dev git
     - apt-get install -y texlive-full
+    - add-apt-repository -y ppa:marutter/rrutter4.0
+    - add-apt-repository -y ppa:c2d4u.team/c2d4u4.0+
     - echo $CI_PROJECT_DIR
   script:
   - export CURRENT_DATE=$(date +%Y%m%d)
   - gunzip test1.csv-joseph-esprimop957-$CURRENT_DATE.tab.gz
   - gunzip test2.csv-joseph-esprimop957-$CURRENT_DATE.tab.gz
   - gunzip test3.csv-joseph-esprimop957-$CURRENT_DATE.tab.gz
-  - R -e "install.packages(c('tidyverse', 'lubridate', 'psych', 'rmarkdown', 'rjson', 'readr', 'reshape2', 'tinytex'), repos='http://cran.rstudio.com/')"
+  - R -e "install.packages(c('tidyverse', 'lubridate', 'psych', 'rmarkdown', 'rjson', 'readr', 'reshape2', 'tinytex'))"
   - git clone https://invent.kde.org/teams/eco/remote-eco-lab.git
   - cd remote-eco-lab/scripts/Preprocessing
   - cp Preprocessing.R ~
