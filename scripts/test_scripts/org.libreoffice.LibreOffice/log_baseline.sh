@@ -15,10 +15,11 @@ timestamp() {
     echo "iteration $1;$(date -I) $(date +%T);$2 " >> ~/log_baseline.csv
 }
 
+# Loop running for 30 times
 for ((i = 1 ; i <= 2; i++)); do
 
     # burn in
-    syncUp 1 #60
+    syncUp 10 #60
 
     # start
     timestamp "$i" "startTestrun"
@@ -26,12 +27,12 @@ for ((i = 1 ; i <= 2; i++)); do
 
     # leave running for time (in seconds)
     # for SUS
-    syncUp 6
+    syncUp 20
 
     echo " stop  iteration "
     timestamp "$i" "stopTestrun"
 
     # cool down
-    syncUp 1
+    syncUp 5
 
 done

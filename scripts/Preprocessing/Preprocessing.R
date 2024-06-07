@@ -10,9 +10,10 @@ library(lubridate) # for dates/times
 options(scipen=999) # turn off scientific notation
 
 # set wd
-paste(dirname("/builds/teams/eco/remote-eco-lab//"), '/', sep = '')
-setwd(dirname("/builds/teams/eco/remote-eco-lab//"))
-getwd()
+print("Working Dir")
+print(getwd())
+setwd("/builds/teams/eco/remote-eco-lab/")
+print(getwd())
 
 #################
 ## power meter ##

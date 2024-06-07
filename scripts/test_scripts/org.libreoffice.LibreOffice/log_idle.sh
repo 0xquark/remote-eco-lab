@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# Make sure LibreOffice is not running
+pgrep soffice | xargs kill -9
+
 startTime=$(date +%s%N)
 elapsed=0
 
@@ -14,45 +17,46 @@ timestamp() {
     echo "iteration $1;$(date -I) $(date +%T);$2 " >> ~/log_idle.csv
 }
 
-for ((i = 1 ; i <= 2 ; i++)); do
+# Loop running for 30 times
+for ((i = 1 ; i <= 2; i++)); do
 
     # burn in
-    syncUp 1 #60
+    syncUp 10 #60
 
     # start
     timestamp "$i" "startTestrun"
     echo "start iteration $i"
 
     # start pause
-    syncUp 1
+    syncUp 5
 
-    # open kate
-    kate > /dev/null 2>&1 & # open kate
+    # open writer
+    flatpak run org.libreoffice.LibreOffice --writer 2>&1 &
 
     # leave open for time (in seconds)
     # for SUS minus start pause minus wrap-up
-    syncUp 1
+    syncUp 20
+
+    # Close the tip of the day dialog
+    xdotool key Return
+    syncUp 2
 
     # wrap-up
-    # quit kate
-    xdotool key Ctrl+1            #custom
-    syncUp 1
-    xdotool key ISO_Left_Tab
-    syncUp 1
-    xdotool key Return
-    syncUp 1
+    # quit writer
+    xdotool key Ctrl+w
+    syncUp 5
+
+    # quit LibreOffice
+    xdotool key Ctrl+w
+    syncUp 5
 
     echo " stop  iteration "
     timestamp "$i" "stopTestrun"
 
     # cool down
-    syncUp 1
+    syncUp 5
 
-    # Remove logs
-    rm ~/.config/katerc
-    rm ~/.local/share/kate
-    rm ~/.config/katemetainfos
-
-    clear
+    # Remove user directory
+    rm -rf ~/.var/app/org.libreoffice.LibreOffice/
 
 done
