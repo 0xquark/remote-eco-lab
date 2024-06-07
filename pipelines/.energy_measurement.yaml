@@ -39,7 +39,7 @@ energy_measurement:
   script:
    - export CURRENT_DATE=$(date +%Y%m%d)
    # Start taking PM Readings (Script 1)
-   - cd /home/gitlab-runner/GUDEPowerMeter && nohup python3 check_gude_modified.py -i 1 -x 192.168.170.23 >> ~/testreadings1.csv 2>/dev/null &
+   - cd /home/gitlab-runner/GUDEPowerMeter && nohup python3 check_gude_modified.py -i 1 -x 192.168.170.22 >> ~/testreadings1.csv 2>/dev/null &
    # Start taking Hardware readings using collectl (for script 1)
    - ssh -o StrictHostKeyChecking=no -i ~/.ssh/kecolab karan@$LABPC_IP '
     nohup collectl -s cdmn -i1 -P --sep 59 -f ~/test1.csv >/dev/null 2>&1 &
@@ -47,14 +47,14 @@ energy_measurement:
    # Kill the Process taking PM Readings
    - pkill -f check_gude_modified.py
   # Start taking PM Readings (Script 2)
-   - cd /home/gitlab-runner/GUDEPowerMeter && nohup python3 check_gude_modified.py -i 1 -x 192.168.170.23 >> ~/testreadings2.csv 2>/dev/null & 
+   - cd /home/gitlab-runner/GUDEPowerMeter && nohup python3 check_gude_modified.py -i 1 -x 192.168.170.22 >> ~/testreadings2.csv 2>/dev/null & 
   # Start taking Hardware readings using collectl (for script 2)
    - ssh -o StrictHostKeyChecking=no -i ~/.ssh/kecolab karan@$LABPC_IP '
     nohup collectl -s cdmn -i1 -P --sep 59 -f ~/test2.csv >/dev/null 2>&1 &
     export DISPLAY=:0 && export TERM=xterm && cd /tmp/ && chmod +x log_baseline.sh && ./log_baseline.sh'
    - pkill -f check_gude_modified.py
   # Start taking PM Readings (Script 3)
-   - cd /home/gitlab-runner/GUDEPowerMeter && nohup python3 check_gude_modified.py -i 1 -x 192.168.170.23 >> ~/testreadings3.csv 2>/dev/null &
+   - cd /home/gitlab-runner/GUDEPowerMeter && nohup python3 check_gude_modified.py -i 1 -x 192.168.170.22 >> ~/testreadings3.csv 2>/dev/null &
   # Start taking Hardware readings using collectl (for script 3)
    - ssh -o StrictHostKeyChecking=no -i ~/.ssh/kecolab karan@$LABPC_IP '
     nohup collectl -s cdmn -i1 -P --sep 59 -f ~/test3.csv >/dev/null 2>&1 &
