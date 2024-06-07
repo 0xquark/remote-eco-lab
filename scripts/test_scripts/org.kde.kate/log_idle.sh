@@ -14,7 +14,7 @@ timestamp() {
     echo "iteration $1;$(date -I) $(date +%T);$2 " >> ~/log_idle.csv
 }
 
-for ((i = 1 ; i <= 1 ; i++)); do
+for ((i = 1 ; i <= 2 ; i++)); do
 
     # burn in
     syncUp 1 #60
