@@ -17,36 +17,36 @@ timestamp() {
 for ((i = 1 ; i <= 1 ; i++)); do
 
     # burn in
-    syncUp 10 #60
+    syncUp 1 #60
 
     # start
     timestamp "$i" "startTestrun"
     echo "start iteration $i"
 
     # start pause
-    syncUp 5
+    syncUp 1
 
     # open kate
     kate > /dev/null 2>&1 & # open kate
 
     # leave open for time (in seconds)
     # for SUS minus start pause minus wrap-up
-    syncUp 20
+    syncUp 1
 
     # wrap-up
     # quit kate
     xdotool key Ctrl+1            #custom
-    syncUp 2
+    syncUp 1
     xdotool key ISO_Left_Tab
-    syncUp 2
+    syncUp 1
     xdotool key Return
-    syncUp 5
+    syncUp 1
 
     echo " stop  iteration "
     timestamp "$i" "stopTestrun"
 
     # cool down
-    syncUp 5
+    syncUp 1
 
     # Remove logs
     rm ~/.config/katerc
