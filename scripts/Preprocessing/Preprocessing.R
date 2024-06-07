@@ -10,6 +10,7 @@ library(lubridate) # for dates/times
 options(scipen=999) # turn off scientific notation
 
 # set wd
+print("Working Dir")
 getwd()
 paste(dirname("/builds/teams/eco//remote-eco-lab//"), '/', sep = '')
 setwd(dirname("/builds/teams/eco//remote-eco-lab//"))
