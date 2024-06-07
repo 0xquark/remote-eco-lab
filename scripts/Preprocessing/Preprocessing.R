@@ -9,24 +9,9 @@ library(lubridate) # for dates/times
 #library(magrittr)
 options(scipen=999) # turn off scientific notation
 
-# Retrieve command-line arguments
-args <- commandArgs(trailingOnly = TRUE)
-
-# Check if the correct number of arguments is provided
-if (length(args) != 4) {
-  stop("Please provide three filenames and the current working directory as command-line arguments.")
-}
-
-# Extract the filenames and working directory from command-line arguments
-filename1 <- args[1]
-filename2 <- args[2]
-filename3 <- args[3]
-wd <- args[4]
-
 # set wd
-wd=paste(wd, '//', sep = '')
-paste(dirname(wd), '/', sep = '')
-setwd(dirname(wd))
+paste(dirname("/builds/teams/eco/remote-eco-lab//"), '/', sep = '')
+setwd(dirname("/builds/teams/eco/remote-eco-lab//"))
 getwd()
 
 #################
@@ -113,6 +98,19 @@ write.table(pm_sus, '~/pm_sus.csv', sep = ";", row.names = TRUE, quote = FALSE, 
 ## hardware performance ##
 ##########################
 
+# Retrieve command-line arguments
+args <- commandArgs(trailingOnly = TRUE)
+
+# Check if the correct number of arguments is provided
+if (length(args) != 3) {
+  stop("Please provide three filenames as command-line arguments.")
+}
+
+# Extract the filenames from command-line arguments
+filename1 <- args[1]
+filename2 <- args[2]
+filename3 <- args[3]
+
 # Load hw performance data
 raw_hw_sus <- read_delim(filename1, delim = ';', col_names = T, skip = 15)
 raw_hw_bse <- read_delim(filename2, delim = ';', col_names = T, skip = 15)
@@ -163,9 +161,7 @@ preprocess_csv_file <- function(input_filename, output_filename) {
 }
 
 # Define input and output file paths
-input_files <- c(paste(wd, 'log_sus.csv', sep=''),
-                 paste(wd, 'log_baseline.csv', sep=''),
-                 paste(wd, 'log_idle.csv', sep=''))
+input_files <- c("/builds/teams/eco/remote-eco-lab/log_sus.csv", "/builds/teams/eco/remote-eco-lab/log_baseline.csv", "/builds/teams/eco/remote-eco-lab/log_idle.csv")
 output_files <- c("~/log_sus.csv", "~/log_baseline.csv", "~/log_idle.csv")
 
 # Process each input file and save to the corresponding output file
