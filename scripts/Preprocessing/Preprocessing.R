@@ -11,10 +11,9 @@ options(scipen=999) # turn off scientific notation
 
 # set wd
 print("Working Dir")
-getwd()
-paste(dirname("/builds/teams/eco//remote-eco-lab//"), '/', sep = '')
-setwd(dirname("/builds/teams/eco//remote-eco-lab//"))
-getwd()
+print(getwd())
+setwd("/builds/teams/eco/remote-eco-lab/")
+print(getwd())
 
 #################
 ## power meter ##
