@@ -18,7 +18,7 @@ timestamp() {
 for ((i = 1 ; i <= 2; i++)); do
 
     # burn in
-    syncUp 1 #60
+    syncUp 2 #60
 
     # start
     timestamp "$i" "startTestrun"
