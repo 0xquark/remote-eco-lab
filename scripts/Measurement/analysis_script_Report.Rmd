@@ -63,6 +63,7 @@ documentclass: article
 ---
 
 ```{r}
+install.packages("tinytex")
 tinytex::install_tinytex()
 ```
 
