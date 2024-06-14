@@ -104,6 +104,7 @@ result:
   before_script:
     - apt-get update -qq
     - apt-get install -y libxml2-dev libcurl4-openssl-dev libssl-dev git
+    - apt-get install -y --no-install-recommends texlive-latex-base texlive-latex-extra lmodern
     - add-apt-repository -y ppa:marutter/rrutter4.0
     - add-apt-repository -y ppa:c2d4u.team/c2d4u4.0+
     - echo $CI_PROJECT_DIR
