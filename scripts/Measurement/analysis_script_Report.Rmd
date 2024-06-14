@@ -62,12 +62,8 @@ subtitle: "`r params$subtitle`"
 documentclass: article
 ---
 
-```{r, include=FALSE}
-options(tinytex.verbose = TRUE)
-```
-
 ```{r}
-tinytex::latexmk()
+tinytex::install_tinytex()
 ```
 
 # Introduction
