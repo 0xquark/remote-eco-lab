@@ -2,11 +2,10 @@
 rm(list = ls())
 
 # load package
-library(tidyverse)
+library(tidyr)
+library(dplyr)
 library(readr)
 library(lubridate) # for dates/times
-#library(anytime) # for dates/times
-#library(magrittr)
 options(scipen=999) # turn off scientific notation
 
 # set wd
