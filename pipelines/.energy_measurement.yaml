@@ -113,6 +113,7 @@ result:
   - gunzip test2.csv-joseph-esprimop957-$CURRENT_DATE.tab.gz
   - gunzip test3.csv-joseph-esprimop957-$CURRENT_DATE.tab.gz
   - R -e "install.packages(c('tidyverse', 'lubridate', 'psych', 'rmarkdown', 'rjson', 'readr', 'reshape2', 'tinytex'))"
+  - apt-get install -y --no-install-recommends texlive-latex-base texlive-latex-extra lmodern
   - git clone https://invent.kde.org/teams/eco/remote-eco-lab.git
   - cd remote-eco-lab/scripts/Preprocessing
   - cp Preprocessing.R ~
