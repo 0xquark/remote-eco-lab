@@ -22,7 +22,7 @@ timestamp() {
 for ((i = 1 ; i <= 2 ; i++)); do
 
     # burn in
-    syncUp 10 #60
+    syncUp 5 #60
 
     # start
     echo "iteration $i;$(date -I) $(date +%T);startTestrun" >> ~/log_sus.csv
