@@ -61,7 +61,7 @@ subtitle: "`r params$subtitle`"
 documentclass: article
 ---
 ```{r}
-
+tinytex::latexmk()
 ```
 
 # Introduction
