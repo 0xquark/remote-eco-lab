@@ -5,6 +5,7 @@ header-includes:
 lang: en-US
 output:
   pdf_document:
+     latex_engine: pdflatex
      keep_tex: true
      number_sections: TRUE
   highlight: tango
@@ -60,6 +61,11 @@ title: "`r params$title`"
 subtitle: "`r params$subtitle`"
 documentclass: article
 ---
+
+```{r, include=FALSE}
+options(tinytex.verbose = TRUE)
+```
+
 ```{r}
 tinytex::latexmk()
 ```
