@@ -30,11 +30,7 @@ energy_measurement:
   # Copy Usage scenario scripts from test_scripts dir to the LABPC
    - scp -o StrictHostKeyChecking=no -r -i  ~/.ssh/kecolab scripts/test_scripts/$CI_MERGE_REQUEST_TITLE/* karan@$LABPC_IP:/tmp/
   # Check for configuration script
-   - ssh -o StrictHostKeyChecking=no -i ~/.ssh/kecolab karan@$LABPC_IP ' cd /tmp/ &&
-    if [ -f 'configuration.sh' ] && [ -f 'keyboard_shortcuts.shortcuts' ]; then
-    ./configuration.sh
-    fi
-    exit '
+   - ssh -o StrictHostKeyChecking=no -i ~/.ssh/kecolab karan@$LABPC_IP 'cd /tmp/ && if [ -f "configuration.sh" ] && [ -f "keyboard_shortcuts.shortcuts" ]; then ./configuration.sh; fi; exit'
   script:
    - export CURRENT_DATE=$(date +%Y%m%d)
    # Start taking PM Readings (Script 1)
