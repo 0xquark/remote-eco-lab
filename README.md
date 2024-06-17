@@ -84,3 +84,5 @@ By automating the energy measurement process and providing remote access, we mak
 
 ### How to Contribute?
 For discussions about KDE Eco's energy measurement lab, including updates, technical discussions, bug reporting, and general feedback: https://go.kde.org/matrix/#/#kde-eco-dev:kde.org on Matrix.
+
+For other ways to get involved with KDE Eco: https://eco.kde.org/get-involved/
