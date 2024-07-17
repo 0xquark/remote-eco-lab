@@ -115,8 +115,6 @@ test-result:
   - R -e "install.packages(c('tidyr', 'dplyr', 'lubridate', 'psych', 'rmarkdown', 'rjson', 'readr', 'reshape2', 'RColorBrewer'))"
   - R -e "install.packages('tinytex')"
   - R -e "tinytex::install_tinytex()"
-  - R -e "tinytex::tlmgr_install(c('latex', 'RColorBrewer'))"
-  - R -e "tinytex::tlmgr_install('babel')"
   - R -e "tinytex::tlmgr_install('babel-english')"
   - git clone https://invent.kde.org/teams/eco/remote-eco-lab.git
   - cd remote-eco-lab/scripts/Preprocessing
