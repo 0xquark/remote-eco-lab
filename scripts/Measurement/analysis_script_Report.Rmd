@@ -65,7 +65,7 @@ documentclass: article
 ```
 
 # Introduction
-This report contains the analysis results from the Artificial Intelligence IoT (AIoT) resource consumption measurement "`r params$measurementName`". The measurements were executed $n_M = `r params$measurementCount`$ times. The baseline was averaged over $n_B = `r params$baselineCount`$ passes. SUT was \textit{`r params$SUT`}.
+This report contains the analysis results from the resource consumption measurement "`r params$measurementName`". The measurements were executed $n_M = `r params$measurementCount`$ times. The baseline was averaged over $n_B = `r params$baselineCount`$ passes. SUT was \textit{`r params$SUT`}.
 
 ## Durations
 Table \ref{tab:measurement_durations} describes the measurement and baseline durations (measured in seconds) and table \ref{tab:action_durations} describes the duration for the actions. Additionally, Figures \ref{fig:durations} and \ref{fig:action_durations} show the according boxplots.
