@@ -14,8 +14,6 @@ build:
   script:
   # Flatpak command for installing test application based on merge request title from flathub
     - ssh -o StrictHostKeyChecking=no -i ~/.ssh/kecolab karan@$LABPC_IP "
-      #flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo &&
-      #flatpak install --user $CI_MERGE_REQUEST_TITLE -y "
       flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo &&
       flatpak install flathub --user org.kde.okular -y "
   rules:
