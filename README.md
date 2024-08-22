@@ -24,7 +24,7 @@ If you have any trouble while performing any of the below steps, refer to this t
 
 ![KEcolab-Tutorial](KEcolab-Tutorial.mp4) 
 
-### Pre-requistes 
+### Pre-requisites
 Ensure you have the following prerequisites in place:
  - Application Package Name (e.g., for "kate", use "org.kde.kate")
  - Usage Scenario Scripts (Standard Usage Scenario, Idle Scenario, Baseline Scenario) : To create these scripts, follow the guidelines provided in [How to measure your software](https://eco.kde.org/handbook/#a-how-to-measure-your-software). Various tools, such as [KdeEcoTest](https://invent.kde.org/teams/eco/feep/-/tree/master/tools/KdeEcoTest), [Xdotool](https://github.com/jordansissel/xdotool) etc. can be used for script creation.
