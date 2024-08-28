@@ -41,10 +41,10 @@ gpuTimestampFormat <- "%Y/%m/%d %H:%M:%OS"
 performanceDataColumns <- c("CPU.Totl", "MEM.Used", "NET.RxKBTot", "NET.TxKBTot", "DSK.ReadTot", "DSK.WriteTot")
 performanceBaselineColumns <- c("CPU.Totl", "MEM.Used", "NET.RxKBTot", "NET.TxKBTot", "DSK.ReadTot", "DSK.WriteTot")
 
-reportTitle <- "Measurement analysis"
-scenarioName <- "Scenario name"
-measurementName <- "Measurement name"
-SUT <- "Used SUT"
+reportTitle <- "KEcoLab Measurement Analysis"
+scenarioName <- "Standard Usage Scenario"
+measurementName <- "Usage Scenario"
+SUT <- "Standard Usage Scenario"
 
 # Functions and Rmd:
 rmdLocation <- "analysis_script_Report.Rmd"
@@ -404,9 +404,9 @@ setwd(saveWd)
 
 #Generate the pdf using RMarkdown
 render(input = rmdLocation, output_file = outputFileName, params = list(
-  title = "Measurement analysis",
-  subtitle = "cNN Scenario",
-  measurementName = "cNN Scenario",
+  title = "KEcoLab Measurement Analysis",
+  subtitle = "A Report From KDE's Lab",
+  measurementName = "Usage Scenario",
   SUT = SUT,
   startmarkers = startmarkers,
   endmarkers = endmarkers,
