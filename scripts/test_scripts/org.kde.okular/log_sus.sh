@@ -417,7 +417,7 @@ for ((i = 0 ; i < 30; i++)); do
     echo "iteration $i;$(date -I) $(date +%T);stopTestrun" >> ~/log_sus.csv
 
     # cool down
-    syncUp 60
+    syncUp 30
 
     ## clean up
     # remove logs
