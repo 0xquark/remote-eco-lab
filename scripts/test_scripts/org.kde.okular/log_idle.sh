@@ -28,7 +28,7 @@ rm -f ~/.config/okularrc
 rm -f ~/.config/okularpartrc
 rm -f -r ~/.local/share/okular/*
 
-for ((i = 0; i <= 3; i++)); do
+for ((i = 1; i <= 3; i++)); do
 
     # burn in
     syncUp 30

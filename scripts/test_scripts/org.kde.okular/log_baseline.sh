@@ -13,7 +13,7 @@ syncUp() {
 
 # timestamp function not needed
 
-for ((i = 0; i < 3; i++)); do
+for ((i = 1; i <= 3; i++)); do
 
     # burn in
     syncUp 30
