@@ -11,18 +11,17 @@ syncUp() {
     sleep $delta
 }
 
-# timestamp function is used to output the time and action into log.csv file.
+# timestamp function is used to output the time and action into log.csv file
 timestamp() {
     echo "iteration $1;$(date -I) $(date +%T);startAction;$2 " >> ~/log_sus.csv
-
 }
 
 # Loop running for 30 times
 # start loop
-for ((i = 1 ; i <= 2 ; i++)); do
+for ((i = 1 ; i <= 3 ; i++)); do
 
     # burn in
-    syncUp 1 #60
+    syncUp 10 #60
 
     # start
     echo "iteration $i;$(date -I) $(date +%T);startTestrun" >> ~/log_sus.csv
@@ -32,7 +31,9 @@ for ((i = 1 ; i <= 2 ; i++)); do
     syncUp 1
 
     # open kate
-    kate ~/katemainwindow.cpp > /dev/null 2>&1 &   
+    echo " open kate "
+    timestamp "$i" "open kate"
+    kate ~/katemainwindow.cpp > /dev/null 2>&1 &
     syncUp 1
 
     echo " go to line 100 "
@@ -41,11 +42,10 @@ for ((i = 1 ; i <= 2 ; i++)); do
     xdotool key Ctrl+g
     xdotool type "100"
     xdotool key Return
-    syncUp 1
+    syncUp 3
 
     # wrap-up
     # quit kate
-    echo "iteration $i;$(date -I) $(date +%T);stopAction" >> ~/log_sus.csv
     echo " quit kate "
     timestamp "$i" "quit kate"
     xdotool key Ctrl+1            #custom
@@ -56,10 +56,11 @@ for ((i = 1 ; i <= 2 ; i++)); do
     syncUp 1
 
     # stop iteration
-    echo "iteration $i;$(date -I) $(date +%T);stopAction" >> ~/log_sus.csv
-    echo " stop  iteration "
+    echo " stop iteration "
     echo "iteration $i;$(date -I) $(date +%T);stopTestrun" >> ~/log_sus.csv
-    syncUp 1
+
+    # cool down
+    syncUp 10
 
     # Remove logs
     rm ~/somefile.txt
@@ -70,6 +71,3 @@ for ((i = 1 ; i <= 2 ; i++)); do
     clear
 
 done
-
-#end loop
-#end script
