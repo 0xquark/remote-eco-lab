@@ -10,8 +10,13 @@ syncUp() {
     sleep $delta
 }
 
+# timestamp function is used to output the time and action into log.csv file
 timestamp() {
     echo "iteration $1;$(date -I) $(date +%T);$2 " >> ~/log_idle.csv
+}
+
+stopAction() {
+    echo "iteration $1;$(date -I) $(date +%T);stopAction " >> ~/log_idle.csv
 }
 
 # Start scripts with everything fresh
@@ -23,32 +28,38 @@ rm -f ~/.config/okularrc
 rm -f ~/.config/okularpartrc
 rm -f -r ~/.local/share/okular/*
 
-for ((i = 0; i <= 10; i++)); do
+for ((i = 0; i <= 3; i++)); do
 
     # burn in
     syncUp 30
 
     # start
-    echo "iteration $i;$(date -I) $(date +%T);startTestRun" >> ~/log_idle.csv
+    echo "iteration $i;$(date -I) $(date +%T);startTestrun" >> ~/log_idle.csv
     echo "start iteration $i"
 
     # start pause
     syncUp 5
 
     # open okular
+    echo " open okular "
+    timestamp "$i" "open okular"
     okular > /dev/null 2>&1 & # open okular
+    syncUp 2
+    stopAction "$i"
 
     # leave open for time (in seconds)
     # for SUS minus start pause minus wrap-up
-    syncUp 203
+    syncUp 201
 
     # wrap-up
     # quit okular
-    echo " Quit Okular "
-    timestamp "$i" "Quit Okular"
+    echo " quit okular "
+    timestamp "$i" "quit okular"
     xdotool key Ctrl+q
     syncUp 2
+    stopAction "$i"
 
+    # stop iteration
     echo " stop iteration "
     echo "iteration $i;$(date -I) $(date +%T);stopTestrun" >> ~/log_idle.csv
 
