@@ -16,6 +16,10 @@ timestamp() {
     echo "iteration $1;$(date -I) $(date +%T);startAction;$2 " >> ~/log_idle.csv
 }
 
+stopAction() {
+    echo "iteration $1;$(date -I) $(date +%T);stopAction " >> ~/log_idle.csv
+}
+
 # Loop running for 30 times
 # start loop
 for ((i = 1 ; i <= 3 ; i++)); do
@@ -35,10 +39,14 @@ for ((i = 1 ; i <= 3 ; i++)); do
     timestamp "$i" "open kate"
     kate > /dev/null 2>&1 & # open kate
     syncUp 1
+    stopAction "$i"
 
     # leave open for time (in seconds)
     # for SUS minus start pause minus wrap-up
+    echo " idle "
+    timestamp "$i" "idle"
     syncUp 3
+    stopAction "$i"
 
     # wrap-up
     # quit kate
@@ -50,6 +58,7 @@ for ((i = 1 ; i <= 3 ; i++)); do
     syncUp 1
     xdotool key Return
     syncUp 1
+    stopAction "$i"
 
     # stop iteration
     echo " stop iteration "
