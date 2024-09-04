@@ -122,9 +122,12 @@ result:
   - Rscript ~/Preprocessing.R test1.csv-joseph-esprimop957-$CURRENT_DATE.tab test2.csv-joseph-esprimop957-$CURRENT_DATE.tab test3.csv-joseph-esprimop957-$CURRENT_DATE.tab $CI_PROJECT_DIR
   # Run OSCAR Analysis script to generate a report
   - Rscript ~/analysis_script.R
-  - cp ~/Report.pdf $CI_PROJECT_DIR/
+  - cp -r ~/Report.pdf ~/Report.tex ~/graphics ~/Report_files $CI_PROJECT_DIR/
   artifacts:
     paths:
      - Report.pdf
+     - Report.tex
+     - graphics/
+     - Report_files
   rules:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
