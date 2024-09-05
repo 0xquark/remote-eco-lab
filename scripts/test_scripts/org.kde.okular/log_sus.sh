@@ -67,7 +67,7 @@ fi
 
 # Loop running for 30 times
 # Start loop
-for ((i = 1 ; i <= 2; i++)); do
+for ((i = 1 ; i <= 5; i++)); do
 
     # Copy PDF to home directory
     # so PDF is identical every time
