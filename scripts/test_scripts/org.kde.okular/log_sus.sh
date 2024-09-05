@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# Make sure language is set to en_us
+setxkbmap us
+
 ######################################
 # THESE NEED TO BE DEFINED IN OKULAR #
 ######################################
@@ -8,8 +11,8 @@
 # Invert color: Ctrl+i
 # Fit to width: Ctrl+Shift+w
 
-# Make sure language is set to en_us
-setxkbmap us
+# import keyboard shortcuts
+./configuration.sh
 
 # Log file names start with today's date, so new log file name is given if running past midnight.
 
@@ -473,3 +476,8 @@ for ((i = 1 ; i <= 5; i++)); do
     clear
 
 done
+
+## rm configuration scripts and keyboard shortcuts
+
+rm /tmp/configuration.sh
+rm /tmp/part.rc

@@ -30,7 +30,7 @@ energy_measurement:
   # Copy Usage scenario scripts from test_scripts dir to the LABPC
    - scp -o StrictHostKeyChecking=no -r -i  ~/.ssh/kecolab scripts/test_scripts/$CI_MERGE_REQUEST_TITLE/* karan@$LABPC_IP:/tmp/
   # Check for configuration script for application under test
-   - ssh -o StrictHostKeyChecking=no -i ~/.ssh/kecolab karan@$LABPC_IP 'export DISPLAY=:0 && export TERM=xterm && cd /tmp/ && if [ -f "configuration.sh" ] && [ -f "part.rc" ]; then chmod +x configuration.sh && ./configuration.sh; fi; exit'
+   - ssh -o StrictHostKeyChecking=no -i ~/.ssh/kecolab karan@$LABPC_IP 'export DISPLAY=:0 && export TERM=xterm && cd /tmp/ && if [ -f "configuration.sh" ]; then chmod +x configuration.sh; fi; exit'
   script:
    - export CURRENT_DATE=$(date +%Y%m%d)
    # Start taking PM Readings (Script 1)
