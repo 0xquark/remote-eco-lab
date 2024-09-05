@@ -53,7 +53,7 @@ rm -f ~/log_sus.csv
 rm -f ~/.config/okularrc
 rm -f ~/.config/okularpartrc
 rm -f -r ~/.local/share/okular/*
-rm -f -r ~/20yearsofKDE.pdf
+rm -f ~/Documents/20yearsofKDE.pdf
 
 # Define PDF used for the script exists
 FILE=~/Documents/okular/20yearsofKDE.pdf
@@ -471,7 +471,7 @@ for ((i = 1 ; i <= 5; i++)); do
     rm ~/.config/okularpartrc
     rm -r ~/.local/share/okular/*
     # delete annotated PDF
-    rm ~/20yearsofKDE.pdf
+    rm ~/Documents/20yearsofKDE.pdf
 
     clear
 
