@@ -21,7 +21,7 @@ stopAction() {
 
 # Loop running for 30 times
 # start loop
-for ((i = 1 ; i <= 3 ; i++)); do
+for ((i = 1 ; i <= 2 ; i++)); do
 
     # burn in
     syncUp 10 #60
@@ -64,7 +64,7 @@ for ((i = 1 ; i <= 3 ; i++)); do
     echo "iteration $i;$(date -I) $(date +%T);stopTestrun" >> ~/log_idle.csv
 
     # cool down
-    syncUp 10 #60
+    syncUp 10
 
     # Remove logs
     rm ~/.config/katerc
