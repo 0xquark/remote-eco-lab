@@ -11,11 +11,10 @@ syncUp() {
     sleep $delta
 }
 
-# timestamp function is used to output the time and action into log.csv file
-timestamp() {
+# startAction / stopAction functions are used to output the time and action into log.csv file
+startAction() {
     echo "iteration $1;$(date -I) $(date +%T);startAction;$2 " >> ~/log_sus.csv
 }
-
 stopAction() {
     echo "iteration $1;$(date -I) $(date +%T);stopAction " >> ~/log_sus.csv
 }
@@ -36,13 +35,24 @@ for ((i = 1 ; i <= 3 ; i++)); do
 
     # open kate
     echo " open kate "
-    timestamp "$i" "open kate"
-    kate ~/katemainwindow.cpp > /dev/null 2>&1 &
+    startAction "$i" "open kate"
+    kate > /dev/null 2>&1 & # open kate
+    syncUp 1
+    stopAction "$i"
+
+    # open text document
+    echo " open text document "
+    startAction "$i" "open text document"
+    xdotool key Ctrl+o
+    syncUp 1
+    xdotool type --delay 100 "katemainwindow.cpp"
+    syncUp 1
+    xdotool key Return
     syncUp 1
     stopAction "$i"
 
     echo " go to line 100 "
-    timestamp "$i" "go to line 100"
+    startAction "$i" "go to line 100"
     # go to line 100
     xdotool key Ctrl+g
     xdotool type "100"
@@ -53,7 +63,7 @@ for ((i = 1 ; i <= 3 ; i++)); do
     # wrap-up
     # quit kate
     echo " quit kate "
-    timestamp "$i" "quit kate"
+    startAction "$i" "quit kate"
     xdotool key Ctrl+1            #custom
     syncUp 1
     xdotool key ISO_Left_Tab

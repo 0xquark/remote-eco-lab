@@ -11,7 +11,7 @@ syncUp() {
     sleep $delta
 }
 
-# timestamp function not needed
+# startAction / stopAction functions not needed
 
 # Loop running for 30 times
 # start loop

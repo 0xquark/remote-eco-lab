@@ -11,7 +11,7 @@ syncUp() {
     sleep $delta
 }
 
-# timestamp function not needed
+# startAction / stopAction functions not needed
 
 for ((i = 1; i <= 5; i++)); do
 

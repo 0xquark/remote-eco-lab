@@ -30,11 +30,10 @@ syncUp() {
     sleep $delta
 }
 
-# Timestamp function is used to output the time and action into log.csv file.
-timestamp() {
+# startAction / stopAction functions are used to output the time and action into log.csv file
+startAction() {
     echo "iteration $1;$(date -I) $(date +%T);startAction;$2 " >> ~/log_sus.csv
 }
-
 stopAction() {
     echo "iteration $1;$(date -I) $(date +%T);stopAction " >> ~/log_sus.csv
 }
@@ -69,7 +68,7 @@ for ((i = 1 ; i <= 10; i++)); do
 
     # Copy PDF to home directory
     # so PDF is identical every time
-    cp ~/Documents/okular/20yearsofKDE.pdf ~/20yearsofKDE.pdf
+    cp ~/Documents/okular/20yearsofKDE.pdf ~/Documents/20yearsofKDE.pdf
 
     # Burn in time
     syncUp 60
@@ -82,22 +81,33 @@ for ((i = 1 ; i <= 10; i++)); do
     syncUp 5
 
     # Open okular, discard STDERR and STDOUT to /dev/null
-    echo " Open PDF document 20yearsofKDE "
-    timestamp "$i" "Open PDF document 20yearsofKDE"
-    okular ~/20yearsofKDE.pdf > /dev/null 2>&1 &
-    syncUp 5
+    echo " Open Okular "
+    startAction "$i" "Open Okular"
+    okular > /dev/null 2>&1 &
+    syncUp 2
+    stopAction "$i"
+
+    # open PDF document
+    echo " open PDF document "
+    startAction "$i" "open PDF document"
+    xdotool key Ctrl+o
+    syncUp 1
+    xdotool type --delay 100 "20yearsofKDE.pdf"
+    syncUp 1
+    xdotool key Return
+    syncUp 1
     stopAction "$i"
 
     # Fit to width
     echo " Fit to width "
-    timestamp "$i" "Fit to width"
+    startAction "$i" "Fit to width"
     xdotool key Ctrl+Shift+w
     syncUp 2
     stopAction "$i"
 
     # Enter page number 38 and jump there
     echo " Open Go to dialogue and type 38 "
-    timestamp "$i" "Open Go to dialogue and type 38"
+    startAction "$i" "Open Go to dialogue and type 38"
     xdotool key Ctrl+g
     syncUp 1
     xdotool type --delay 400 "38"
@@ -108,7 +118,7 @@ for ((i = 1 ; i <= 10; i++)); do
 
     # Mark text and insert comment
     echo " Toggle annotation panel "
-    timestamp "$i" "Toggle annotation panel"
+    startAction "$i" "Toggle annotation panel"
     # Toggle annotations panel
     xdotool key F6
     syncUp 2
@@ -119,7 +129,7 @@ for ((i = 1 ; i <= 10; i++)); do
 
     # Select highlighter tool
     echo " Toggle highlighter tool and select text to highlight "
-    timestamp "$i" "Toggle highlighter tool and select text to highlight"
+    startAction "$i" "Toggle highlighter tool and select text to highlight"
     xdotool key Alt+1
     # Hold mouse button down, move directly downwards (180) for 75 pixels, unclick
     xdotool mousedown 1 mousemove --polar 180 75 click 1
@@ -129,21 +139,21 @@ for ((i = 1 ; i <= 10; i++)); do
     # Move mouse directly downwards from middle point of
     # window (180) over highlighted text, double click to add note
     echo " Write annotation "
-    timestamp "$i" "Write annotation"
+    startAction "$i" "Write annotation"
     xdotool mousemove --polar 180 25 click --repeat 2 1 type --delay 200 'Very interesting text! I should read more about this topic.'
     syncUp 8
     stopAction "$i"
 
     # return to browsing mode
     echo " Toggle highlighter tool again to return to browsing mode "
-    timestamp "$i" "Toggle highlighter tool again to return to browsing mode"
+    startAction "$i" "Toggle highlighter tool again to return to browsing mode"
     xdotool key Alt+1
     syncUp 2
     stopAction "$i"
 
     # Start presentation mode and move up and down pages
     echo " Start presentation mode "
-    timestamp "$i" "Start presentation mode"
+    startAction "$i" "Start presentation mode"
     # Toggle presentation
     xdotool key Ctrl+Shift+p
     syncUp 1
@@ -154,7 +164,7 @@ for ((i = 1 ; i <= 10; i++)); do
 
     # Move around the pages
     echo " Move down five pages "
-    timestamp "$i" "Move down five pages"
+    startAction "$i" "Move down five pages"
     xdotool key Down
     syncUp 2
     xdotool key Down
@@ -168,7 +178,7 @@ for ((i = 1 ; i <= 10; i++)); do
     stopAction "$i"
 
     echo " Move up five pages "
-    timestamp "$i" "Move up five pages"
+    startAction "$i" "Move up five pages"
     xdotool key Up
     syncUp 2
     xdotool key Up
@@ -183,7 +193,7 @@ for ((i = 1 ; i <= 10; i++)); do
 
     # Exit
     echo " Exit presentation mode "
-    timestamp "$i" "Exit presentation mode"
+    startAction "$i" "Exit presentation mode"
     xdotool key Escape
     syncUp 1
     stopAction "$i"
@@ -194,7 +204,7 @@ for ((i = 1 ; i <= 10; i++)); do
 
     # Rotate page right
     echo " Rotate page right twice "
-    timestamp "$i" "Rotate page right twice"
+    startAction "$i" "Rotate page right twice"
     xdotool key Ctrl+r
     syncUp 6
     xdotool key Ctrl+r
@@ -203,7 +213,7 @@ for ((i = 1 ; i <= 10; i++)); do
 
     # Rotate page left
     echo " Rotate page left twice "
-    timestamp "$i" "Rotate page left twice"
+    startAction "$i" "Rotate page left twice"
     xdotool key Ctrl+l
     syncUp 6
     xdotool key Ctrl+l
@@ -212,7 +222,7 @@ for ((i = 1 ; i <= 10; i++)); do
 
     # Move around the pages
     echo " Move forward five pages "
-    timestamp "$i" "Move forward five pages"
+    startAction "$i" "Move forward five pages"
     xdotool key Right
     syncUp 2
     xdotool key Right
@@ -226,7 +236,7 @@ for ((i = 1 ; i <= 10; i++)); do
     stopAction "$i"
 
     echo " Move backward five pages "
-    timestamp "$i" "Move backward five pages"
+    startAction "$i" "Move backward five pages"
     xdotool key Left
     syncUp 2
     xdotool key Left
@@ -241,13 +251,13 @@ for ((i = 1 ; i <= 10; i++)); do
 
     # Zoom out
     echo " Zoom to 100 percent "
-    timestamp "$i" "Zoom to 100 percent"
+    startAction "$i" "Zoom to 100 percent"
     xdotool key Ctrl+0
     syncUp 3
     stopAction "$i"
 
     echo " Zoom to 400 percent "
-    timestamp "$i" "Zoom to 400 percent"
+    startAction "$i" "Zoom to 400 percent"
     # Zoom in
     xdotool key Ctrl+plus
     syncUp 1
@@ -263,14 +273,14 @@ for ((i = 1 ; i <= 10; i++)); do
 
     # Fit to width
     echo " Fit to width "
-    timestamp "$i" "Fit to width"
+    startAction "$i" "Fit to width"
     xdotool key Ctrl+Shift+w
     syncUp 1
     stopAction "$i"
 
     # Invert colors
     echo " Invert colors "
-    timestamp "$i" "Invert colors"
+    startAction "$i" "Invert colors"
     # Invert colors
     xdotool key Ctrl+i
     syncUp 5
@@ -281,7 +291,7 @@ for ((i = 1 ; i <= 10; i++)); do
 
     # Enter page number 42 and jump there
     echo " Open Go to dialogue and type 42 "
-    timestamp "$i" "Open Go to dialogue and type 42"
+    startAction "$i" "Open Go to dialogue and type 42"
     xdotool key Ctrl+g
     syncUp 1
     xdotool type --delay 400 "42"
@@ -292,7 +302,7 @@ for ((i = 1 ; i <= 10; i++)); do
 
     # Mark text and insert comment
     echo " Toggle annotation panel "
-    timestamp "$i" "Toggle annotation panel"
+    startAction "$i" "Toggle annotation panel"
     # Toggle annotations panel
     xdotool key F6
     syncUp 2
@@ -303,7 +313,7 @@ for ((i = 1 ; i <= 10; i++)); do
 
     # Select highlighter tool
     echo " Toggle highlighter tool and select text to highlight "
-    timestamp "$i" "Toggle highlighter tool and select text to highlight"
+    startAction "$i" "Toggle highlighter tool and select text to highlight"
     xdotool key Alt+1
     xdotool mousedown 1 mousemove --polar 180 75 click 1
     syncUp 2
@@ -312,21 +322,21 @@ for ((i = 1 ; i <= 10; i++)); do
     # Move mouse directly downwards from middle point of
     # window (180) over highlighted text, double click to add note
     echo " Write annotation "
-    timestamp "$i" "Write annotation"
+    startAction "$i" "Write annotation"
     xdotool mousemove --polar 180 25 click --repeat 2 1 type --delay 200 'Again this is very interesting, should read more.'
     syncUp 8
     stopAction "$i"
 
     # return to browsing mode
     echo " Toggle highlighter tool again to return to browsing mode "
-    timestamp "$i" "Toggle highlighter tool again to return to browsing mode"
+    startAction "$i" "Toggle highlighter tool again to return to browsing mode"
     xdotool key Alt+1
     syncUp 1
     stopAction "$i"
 
     # Start presentation mode and move up and down pages
     echo " Start presentation mode "
-    timestamp "$i" "Start presentation mode"
+    startAction "$i" "Start presentation mode"
     # Toggle presentation
     xdotool key Ctrl+Shift+p
     syncUp 2
@@ -337,7 +347,7 @@ for ((i = 1 ; i <= 10; i++)); do
 
     # Exit presentation
     echo " Exit presentation mode "
-    timestamp "$i" "Exit presentation mode"
+    startAction "$i" "Exit presentation mode"
     xdotool key Escape
     syncUp 1
     # Move mouse to center of Okular window, click mouse to exit text box
@@ -347,7 +357,7 @@ for ((i = 1 ; i <= 10; i++)); do
 
     # Rotate page right
     echo " Rotate page right twice "
-    timestamp "$i" "Rotate page right twice"
+    startAction "$i" "Rotate page right twice"
     xdotool key Ctrl+r
     syncUp 6
     xdotool key Ctrl+r
@@ -356,7 +366,7 @@ for ((i = 1 ; i <= 10; i++)); do
 
     # Rotate page left
     echo " Rotate page left twice "
-    timestamp "$i" "Rotate page left twice"
+    startAction "$i" "Rotate page left twice"
     xdotool key Ctrl+l
     syncUp 6
     xdotool key Ctrl+l
@@ -365,7 +375,7 @@ for ((i = 1 ; i <= 10; i++)); do
 
     # Move around the pages
     echo " Move forward five pages "
-    timestamp "$i" "Move forward five pages"
+    startAction "$i" "Move forward five pages"
     xdotool key Right
     syncUp 2
     xdotool key Right
@@ -379,7 +389,7 @@ for ((i = 1 ; i <= 10; i++)); do
     stopAction "$i"
 
     echo " Move backward five pages "
-    timestamp "$i" "Move backward five pages"
+    startAction "$i" "Move backward five pages"
     xdotool key Left
     syncUp 2
     xdotool key Left
@@ -394,13 +404,13 @@ for ((i = 1 ; i <= 10; i++)); do
 
     # Zoom out
     echo " Zoom to 100 percent "
-    timestamp "$i" "Zoom to 100 percent"
+    startAction "$i" "Zoom to 100 percent"
     xdotool key Ctrl+0
     syncUp 3
     stopAction "$i"
 
     echo " Zoom to 400 percent "
-    timestamp "$i" "Zoom to 400 percent"
+    startAction "$i" "Zoom to 400 percent"
     # Zoom in
     xdotool key Ctrl+plus
     syncUp 1
@@ -416,14 +426,14 @@ for ((i = 1 ; i <= 10; i++)); do
 
     # Fit to width
     echo " Fit to width "
-    timestamp "$i" "Fit to width"
+    startAction "$i" "Fit to width"
     xdotool key Ctrl+Shift+w
     syncUp 1
     stopAction "$i"
 
     # Invert colors back
     echo " Invert colors back "
-    timestamp "$i" "Invert colors back"
+    startAction "$i" "Invert colors back"
     xdotool key Ctrl+i
     syncUp 4
     stopAction "$i"
@@ -433,14 +443,14 @@ for ((i = 1 ; i <= 10; i++)); do
     ## wrap-up
     # save
     echo " Save PDF "
-    timestamp "$i" "Save PDF"
+    startAction "$i" "Save PDF"
     xdotool key Ctrl+s
     syncUp 1
     stopAction "$i"
 
     # quit okular
     echo " Quit Okular "
-    timestamp "$i" "Quit Okular"
+    startAction "$i" "Quit Okular"
     xdotool key Ctrl+q
     syncUp 2
     stopAction "$i"

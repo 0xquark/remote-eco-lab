@@ -10,11 +10,10 @@ syncUp() {
     sleep $delta
 }
 
-# timestamp function is used to output the time and action into log.csv file
-timestamp() {
-    echo "iteration $1;$(date -I) $(date +%T);$2 " >> ~/log_idle.csv
+# startAction / stopAction functions are used to output the time and action into log.csv file
+startAction() {
+    echo "iteration $1;$(date -I) $(date +%T);startAction;$2 " >> ~/log_idle.csv
 }
-
 stopAction() {
     echo "iteration $1;$(date -I) $(date +%T);stopAction " >> ~/log_idle.csv
 }
@@ -42,7 +41,7 @@ for ((i = 1; i <= 5; i++)); do
 
     # open okular
     echo " open okular "
-    timestamp "$i" "open okular"
+    startAction "$i" "open okular"
     okular > /dev/null 2>&1 & # open okular
     syncUp 2
     stopAction "$i"
@@ -54,7 +53,7 @@ for ((i = 1; i <= 5; i++)); do
     # wrap-up
     # quit okular
     echo " quit okular "
-    timestamp "$i" "quit okular"
+    startAction "$i" "quit okular"
     xdotool key Ctrl+q
     syncUp 2
     stopAction "$i"
