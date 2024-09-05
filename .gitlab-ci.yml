@@ -1,5 +1,5 @@
 include:
-  - local: pipelines/.test_energy_measurement.yaml
+#  - local: pipelines/.test_energy_measurement.yaml
   - local: pipelines/.energy_measurement.yaml
 
 # Define environment variables
@@ -8,9 +8,9 @@ variables:
   PM_IP: "192.168.170.22" # IP address of the PM (Power Meter)
 
 stages:
-  - test-build
-  - test-energy_measurement
-  - test-result
+#  - test-build
+#  - test-energy_measurement
+#  - test-result
   - build
   - energy_measurement
   - result

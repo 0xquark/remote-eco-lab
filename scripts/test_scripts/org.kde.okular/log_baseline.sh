@@ -11,12 +11,12 @@ syncUp() {
     sleep $delta
 }
 
-# timestamp function not needed
+# startAction / stopAction functions not needed
 
-for ((i = 1; i <= 2; i++)); do
+for ((i = 1; i <= 5; i++)); do
 
     # burn in
-    syncUp 30
+    syncUp 10 #60
 
     # start
     echo "iteration $i;$(date -I) $(date +%T);startTestrun" >> ~/log_baseline.csv
@@ -31,6 +31,6 @@ for ((i = 1; i <= 2; i++)); do
     echo "iteration $i;$(date -I) $(date +%T);stopTestrun" >> ~/log_baseline.csv
 
     # cool down
-    syncUp 30
+    syncUp 10
 
 done

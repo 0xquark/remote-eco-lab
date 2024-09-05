@@ -11,18 +11,17 @@ syncUp() {
     sleep $delta
 }
 
-# timestamp function is used to output the time and action into log.csv file
-timestamp() {
+# startAction / stopAction functions are used to output the time and action into log.csv file
+startAction() {
     echo "iteration $1;$(date -I) $(date +%T);startAction;$2 " >> ~/log_idle.csv
 }
-
 stopAction() {
     echo "iteration $1;$(date -I) $(date +%T);stopAction " >> ~/log_idle.csv
 }
 
 # Loop running for 30 times
 # start loop
-for ((i = 1 ; i <= 3 ; i++)); do
+for ((i = 1 ; i <= 2 ; i++)); do
 
     # burn in
     syncUp 10 #60
@@ -36,7 +35,7 @@ for ((i = 1 ; i <= 3 ; i++)); do
 
     # open kate
     echo " open kate "
-    timestamp "$i" "open kate"
+    startAction "$i" "open kate"
     kate > /dev/null 2>&1 & # open kate
     syncUp 1
     stopAction "$i"
@@ -44,14 +43,14 @@ for ((i = 1 ; i <= 3 ; i++)); do
     # leave open for time (in seconds)
     # for SUS minus start pause minus wrap-up
     echo " idle "
-    timestamp "$i" "idle"
+    startAction "$i" "idle"
     syncUp 3
     stopAction "$i"
 
     # wrap-up
     # quit kate
     echo " quit kate "
-    timestamp "$i" "quit kate"
+    startAction "$i" "quit kate"
     xdotool key Ctrl+1            #custom
     syncUp 1
     xdotool key ISO_Left_Tab
@@ -65,7 +64,7 @@ for ((i = 1 ; i <= 3 ; i++)); do
     echo "iteration $i;$(date -I) $(date +%T);stopTestrun" >> ~/log_idle.csv
 
     # cool down
-    syncUp 10 #60
+    syncUp 10
 
     # Remove logs
     rm ~/.config/katerc

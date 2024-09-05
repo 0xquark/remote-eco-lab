@@ -29,8 +29,8 @@ energy_measurement:
   before_script: 
   # Copy Usage scenario scripts from test_scripts dir to the LABPC
    - scp -o StrictHostKeyChecking=no -r -i  ~/.ssh/kecolab scripts/test_scripts/$CI_MERGE_REQUEST_TITLE/* karan@$LABPC_IP:/tmp/
-  # Check for configuration script
-   - ssh -o StrictHostKeyChecking=no -i ~/.ssh/kecolab karan@$LABPC_IP 'export DISPLAY=:0 && export TERM=xterm && cd /tmp/ && if [ -f "configuration.sh" ] && [ -f "keyboard_shortcuts.shortcuts" ]; then chmod +x configuration.sh && ./configuration.sh; fi; exit'
+  # Check for configuration script for application under test
+   - ssh -o StrictHostKeyChecking=no -i ~/.ssh/kecolab karan@$LABPC_IP 'export DISPLAY=:0 && export TERM=xterm && cd /tmp/ && if [ -f "configuration.sh" ]; then chmod +x configuration.sh; fi; exit'
   script:
    - export CURRENT_DATE=$(date +%Y%m%d)
    # Start taking PM Readings (Script 1)
@@ -66,6 +66,9 @@ energy_measurement:
    - cp ~/testreadings1.csv testreadings1.csv
    - cp ~/testreadings2.csv testreadings2.csv
    - cp ~/testreadings3.csv testreadings3.csv
+   # Export system info info using Current Date in the filename
+#   - ssh -o StrictHostKeyChecking=no -i ~/.ssh/kecolab karan@$LABPC_IP "
+#    export CURRENT_DATE=$(date +%Y%m%d) && cd ~/ && cp $CURRENT_DATE_system-info.txt ~/system-info.txt"
    # Export all the Raw Power and Hardware Readings to Artifacts
    - scp -o StrictHostKeyChecking=no -r -i  ~/.ssh/kecolab karan@$LABPC_IP:~/test1.csv-joseph-esprimop957.tab.gz test1.csv-joseph-esprimop957-$CURRENT_DATE.tab.gz
    - scp -o StrictHostKeyChecking=no -r -i  ~/.ssh/kecolab karan@$LABPC_IP:~/test2.csv-joseph-esprimop957.tab.gz test2.csv-joseph-esprimop957-$CURRENT_DATE.tab.gz
@@ -73,9 +76,10 @@ energy_measurement:
    - scp -o StrictHostKeyChecking=no -r -i  ~/.ssh/kecolab karan@$LABPC_IP:~/log_sus.csv log_sus.csv
    - scp -o StrictHostKeyChecking=no -r -i  ~/.ssh/kecolab karan@$LABPC_IP:~/log_baseline.csv log_baseline.csv
    - scp -o StrictHostKeyChecking=no -r -i  ~/.ssh/kecolab karan@$LABPC_IP:~/log_idle.csv log_idle.csv
+#   - scp -o StrictHostKeyChecking=no -r -i  ~/.ssh/kecolab karan@$LABPC_IP:~/system-info.txt $CURRENT_DATE_system-info.txt
    # Remove all the logs 
    - cd ~/ && rm testreadings1.csv testreadings2.csv testreadings3.csv
-   - ssh -o StrictHostKeyChecking=no -i ~/.ssh/kecolab karan@$LABPC_IP ' export CURRENT_DATE=$(date +%Y%m%d) && rm log_sus.csv log_baseline.csv log_idle.csv test1.csv-joseph-esprimop957-$CURRENT_DATE.tab.gz test2.csv-joseph-esprimop957-$CURRENT_DATE.tab.gz test3.csv-joseph-esprimop957-$CURRENT_DATE.tab.gz test1.csv-joseph-esprimop957.tab.gz test2.csv-joseph-esprimop957.tab.gz test3.csv-joseph-esprimop957.tab.gz && cd /tmp/  && rm log_sus.sh log_baseline.sh log_idle.sh'
+   - ssh -o StrictHostKeyChecking=no -i ~/.ssh/kecolab karan@$LABPC_IP ' export CURRENT_DATE=$(date +%Y%m%d) && rm log_sus.csv log_baseline.csv log_idle.csv test1.csv-joseph-esprimop957-$CURRENT_DATE.tab.gz test2.csv-joseph-esprimop957-$CURRENT_DATE.tab.gz test3.csv-joseph-esprimop957-$CURRENT_DATE.tab.gz test1.csv-joseph-esprimop957.tab.gz test2.csv-joseph-esprimop957.tab.gz test3.csv-joseph-esprimop957.tab.gz *_system-info.txt && cd /tmp/ && rm log_sus.sh log_baseline.sh log_idle.sh'
   artifacts:
     paths:
       - testreadings1.csv
@@ -87,6 +91,7 @@ energy_measurement:
       - log_sus.csv
       - log_baseline.csv
       - log_idle.csv
+#      - '*_system-info.txt'
   rules:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
 
