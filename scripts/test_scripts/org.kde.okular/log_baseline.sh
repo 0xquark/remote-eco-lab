@@ -13,7 +13,7 @@ syncUp() {
 
 # startAction / stopAction functions not needed
 
-for ((i = 1; i <= 10; i++)); do
+for ((i = 1; i <= 5; i++)); do
 
     # burn in
     syncUp 60

@@ -33,11 +33,6 @@ params:
   powerMeasurementActions: !r data.frame(0)
   allPowerMeasurements: !r data.frame(0)
   allPowerBaselines: !r data.frame(0)
-  cpuBaseline: !r data.frame(0)
-  cpuMeasurement: !r data.frame(0)
-  cpuMeasurementActions: !r data.frame(0)
-  allCpuMeasurements: !r data.frame(0)
-  allCpuBaselines: !r data.frame(0)
   evaluateGpuMeasurement: FALSE
   gpuBaseline: !r data.frame(0)
   gpuMeasurement: !r data.frame(0)
@@ -47,12 +42,13 @@ params:
   watthours: 0
   baselineWatthours: 0
   modelHistory: NULL
+  allEpochsMeans: !r data.frame(0)
+  historyMeans: !r data.frame(0)
   subtitle: ''
   baselineCount: -1
   whatToPlot: !r list()
   actionNames: !r c("a","b")
   graphicsFolder: "graphics"
-  cpucolnamesbaseline: !r c("a","b")
 ---
 
 ---
@@ -60,9 +56,6 @@ title: "`r params$title`"
 subtitle: "`r params$subtitle`"
 documentclass: article
 ---
-```{r}
-
-```
 
 # Introduction
 This report contains the analysis results from the KEcoLab resource consumption measurement "`r params$measurementName`". The measurements were executed $n_M = `r params$measurementCount`$ times. The baseline was averaged over $n_B = `r params$baselineCount`$ passes. SUT was \textit{`r params$SUT`}.
@@ -104,9 +97,9 @@ kable(actionsDF, caption = "Action durations\\label{tab:action_durations}", digi
 ```
 ```{r echo=FALSE, results='hide'}
 png(filename = paste(params$graphicsFolder, "actions/action_durations_boxplot.png", sep="/"), width = 1200, height = 500)
-par("mar" = c(20.1, 4.1, 4.1, 2.1), "cex.axis" = 2.2, "cex.main" = 2.5, "cex.lab" = 2.5)
+par("mar" = c(8.1, 4.1, 4.1, 2.1), "cex.axis" = 2.2, "cex.main" = 2.5, "cex.lab" = 2.5)
 x <- boxplot(actionsTable, main = "Boxplots of the action durations", xaxt = "n", space = 1)
-text(cex=1, x=c(1:length(actionsTable))-0.3, y=-500, substring(names(actionsTable), 1, 20), xpd=TRUE, srt=45)
+text(cex=1, x=c(1:length(actionsTable))-2, y=-500, substring(names(actionsTable), 1, 20), xpd=TRUE, srt=45)
 dev.off()
 rm(x)
 ```
@@ -118,7 +111,7 @@ rm(x)
 \newpage
 
 # Energy Consumption
-This section presents the energy consumption analysis, based upon the power measurements, collected with the power meter`r if(evaluateGpuMeasurement){paste0("\\footnote{Power and energy measurements of the GPU are produced in section \\ref{sec:gpu-power}, because they are recorded with nvidia-smi.}")}`. The first graph (Fig. \ref{fig:power}) shows the power consumption of the System under Test (SUT) during the measurement scenario. It contains the individual measurements (grey), the per-second mean (red) and the "startAction"-timestamps of the longest testrun (blue rug).
+This section presents the energy consumption analysis, based upon the power measurements, collected with the power meter`r if(evaluateGpuMeasurement){paste0("\\footnote{Power and energy measurements of the GPU are produced in section \\ref{sec:gpu-power}, because they are recorded with nvidia-smi.}")}`. The first graph (Fig. \ref{fig:power}) shows the power consumption of the System under Test (SUT) during the measurement scenario. It contains the individual measurements (grey), the per-second mean (red) and the "startAction"-timestamps of the longest testrun (blue rug). Notice that mean value calculation resembles the individual measurements in the later epochs, because most testruns only needed 45 epochs to reach a validation accuracy of 80%.
 
 In an analogous manner, fig. \ref{fig:powerBaseline} shows the power consumption of the baseline measurement (SUT running only in standard configuration without the software product).
 
@@ -159,12 +152,12 @@ To check the accuracy of the automatic load generation, we now calculate the roo
 
 For the testruns, this results to a deviation of `r format(round(meanSD, 3), nsmall = 3)` Watts, with a mean value of `r format(round(mean(as.numeric(allPowerMeasurements$Wert.1.avg.W.)), 3), nsmall = 3)` Watts. For the baselines, this results to a deviation of `r format(round(meanSDBaseline, 3), nsmall = 3)` Watts, with a mean value of `r format(round(mean(as.numeric(allPowerBaselines$Wert.1.avg.W.)), 3), nsmall = 3)` Watts.
 
-To evaluate the energy consumption that is caused by the software product, we first calculate the mean energy consumption [Watt-hours] of the scenario and the baseline measurement as $W_{el} = P\cdot{}t$. Because the measurements of the power usage $P_n$ were recorded with a sampling rate of $F=1 Hz$, the energy can be calculated as
+To evaluate the energy consumption that is caused by the software product, we first calculate the mean energy consumption [Watthours] of the scenario and the baseline measurement as $W_{el} = P\cdot{}t$. Because the measurements of the power usage $P_n$ were recorded with a sampling rate of $F=1 Hz$, the energy can be calculated as
 \begin{equation}
 \label{eqn:Wel}
 W_{el} = \frac{1}{3600} \sum_{n=1}^{m} P_n, \text{ mit } P_n=P_1, P_2, P_3, ..., P_m
 \end{equation}
-Thus, the energy for one testrun or baseline equals the sum of the per-second measurement values (resulting in the unit Watt-seconds). It is then divided by $3600\frac{s}{h}$, resulting in the unit Watt-hours. We then average the energy consumption means over the testruns and baselines, respectively. The results can be found in table \ref{tab:energyResults}.
+Thus, the energy for one testrun or baseline equals the sum of the per-second measurement values (resulting in the unit Wattseconds). It is then divided by $3600\frac{s}{h}$, resulting in the unit Watthours. We then average the energy consumption means over the testruns and baselines, respectively. The results can be found in table \ref{tab:energyResults}.
 
 ```{r echo=FALSE, results='asis'}
 # Calculate Power
@@ -180,7 +173,7 @@ for(i in 1:length(params$powerBaseline)){
 }
 powerBaselineMeansTable <- describe(powerBaselineMeans, IQR = T)
 
-# Calculate Watt-hours
+# Calculate Watthours
 watthours <- NULL
 for(i in 1:length(params$powerMeasurement)){
   watthours[i] <- sum(as.numeric(params$powerMeasurement[[i]]$Wert.1.avg.W.))
@@ -245,12 +238,12 @@ boxplot(watthours, main = paste("testruns"), ylab="Energy [Wh]")
 boxplot(watthours - adjustedBaselineWatthours, main = paste("Scenario induced"), ylab="Energy [Wh]")
 dev.off()
 ```
-![Boxplots of the energy consumption of the baselines (l), testruns (c) and scenario induced (r) \label{fig:powerWhBoxplots}](`r paste(params$graphicsFolder, "power_measurement_boxplots.png", sep="/")`)
+![Boxplots of the energy consumption of the baselines (l), testruns (c) and Scenario induced (r) \label{fig:powerWhBoxplots}](`r paste(params$graphicsFolder, "power_measurement_boxplots.png", sep="/")`)
 
 \newpage
 
 ## Energy Consumption per Action
-This section contains the results for the energy consumption analysis of the individual actions. The results shown in table \ref{tab:ActionResultsPower} represent the mean values for the power and energy consumption of the actions, calculated in the same way as the testrun results. If the measurement duration of an action is too short for a reliable analysis (i.~e. less than one second), this is denoted as "too short". The Scenario induced energy is plotted in figure \ref{fig:powerWhAction}.
+This section contains the results for the energy consumption analysis of the individual actions. The results shown in table \ref{tab:ActionResultsPower} represent the mean values for the power and energy consumption of the actions, calculated in the same way as the testrun results. The scenario induced energy is plotted in figure \ref{fig:powerWhAction}.
 
 ```{r results='asis', echo = FALSE}
 #cat(paste("*", params$actionNames, collapse ="\n"), "\n\n")
@@ -268,12 +261,11 @@ watthoursActions <- watthoursActions/3600
 
 resultTableActions <- NULL
 for(action in actionNames){
-    adjustedBaselineWatthoursAction <- baselineWatthoursTable$mean / baselineDescription$mean * actionsDF[which(actionsDF$`Action name` == action),"mean"]
-    softwareWatthoursAction <- mean(watthoursActions[which(startActions$text == action)]) - adjustedBaselineWatthoursAction
-    resultTableActions <- rbind(resultTableActions, c(mean(powerMeansAction[which(startActions$text == action)]), mean(watthoursActions[which(startActions$text == action)]), adjustedBaselineWatthoursAction, softwareWatthoursAction))
+  adjustedBaselineWatthoursAction <- baselineWatthoursTable$mean / baselineDescription$mean * actionsDF[which(actionsDF$`Action name` == action),"mean"]
+  softwareWatthoursAction <- mean(watthoursActions[which(startActions$text == action)]) - adjustedBaselineWatthoursAction
+  resultTableActions <- rbind(resultTableActions, c(mean(powerMeansAction[which(startActions$text == action)]), mean(watthoursActions[which(startActions$text == action)]), adjustedBaselineWatthoursAction, softwareWatthoursAction))
 }
 resultTableActions <- data.frame(resultTableActions)
-actionNamesForTable <- actionNames
 resultTableActions <- cbind(actionNames, resultTableActions)
 names(resultTableActions)<-c("Action name", "mean power [W]", "energy [Wh]", "baseline energy [Wh]", "Scenario induced [Wh]")
 kable(resultTableActions, caption="Mean measurement results for the individual actions\\label{tab:ActionResultsPower}", digits = 3)
@@ -290,9 +282,11 @@ dev.off()
 # Create the model history section (if any)
 if(!is.null(params$modelHistory)){
   cat("\\clearpage\n\n# Model history\n\n")
-  cat("This section describes the data from the ML process. Table \\ref{tab:history_means} and figure \\ref{fig:accuracy_means} show the results.\n\n")
-  print(kable(params$modelHistory, caption="Model score over all testruns\\label{tab:history_means}", digits = 3))
-  cat("\n\n![Boxplot of the model score\\label{fig:accuracy_means}](", params$graphicsFolder, "/model_history/model_history_boxplot.png)\n\n", sep = "")
+  cat("This section describes the data from the ML process. It includes training and validation loss and accuracy of the models from each testrun and for all epochs (Tables \\ref{tab:history_means_epoch} and \\ref{tab:history_means} and figures \\ref{fig:loss_means} and \\ref{fig:accuracy_means}).\n\n")
+  print(kable(allEpochsMeans, caption="Mean loss and accuracy over all testruns\\label{tab:history_means_epoch}", digits = 3))
+  print(kable(historyMeans, caption="Mean loss and accuracy over all testruns\\label{tab:history_means}", digits = 3))
+  cat("\n\n\\clearpage\n\n![Graph of the model loss during training (l) and validation (r) \\label{fig:loss_means}](", params$graphicsFolder, "/model_history/model_loss_mean.png)\n\n", sep = "")
+  cat("![Graph of the model accuracy during training (l) and validation (r) \\label{fig:accuracy_means}](", params$graphicsFolder, "/model_history/model_accuracy_mean.png)\n\n", sep = "")
 }
 ```
 
@@ -300,26 +294,19 @@ if(!is.null(params$modelHistory)){
 
 # Hardware Usage
 \label{sec:hardware}
-The analysis of the hardware utilization is, for the most part, analogous to the power analysis. The data is averaged over time for each indicator. Table \ref{tab:hwIndicators} shows which parameters were logged (using collectl, cf. the commands in _Scenarios/baseline.sh_ and _Scenarios/scenarios.sh_) and analyzed.
+The analysis of the hardware utilization is, for the most part, analogous to the power analysis. The data is averaged over time and for power measurements, the energy is calculated. Table \ref{tab:hwIndicators} shows which parameters were logged (using the commands in _Measurements/hardware-logging-commands.txt_) and analyzed.
 
 \begin{table}[ht]
 \caption{Logged hardware indicators}
 \label{tab:hwIndicators}
 \begin{tabular}{lll}
 \hline
-\multicolumn{3}{l}{\textbf{Hardware}} \\
+\multicolumn{3}{l}{collectl} \\
 Indicator                               & Unit & Name in collectl \\ \hline
 Total CPU load                          & \%   &  [CPU]Totl\% \\
 RAM usage                               & kB   &  [MEM]Used \\
-disk activity (reading and writing)      & kB   &  [DSK]ReadKBTot + [DSK]WriteKBTot \\
+HDD activity (reading and writing)      & kB   &  [DSK]ReadKBTot + [DSK]WriteKBTot \\
 Network traffic (sending und receiving) & kB   &  [NET]RxKBTot + [NET]TxKBTot \\ \hline
-\multicolumn{3}{l}{\textbf{Individual CPU cores}} \\
-Indicator      & Unit & Name in collectl \\ \hline
-```{r results='asis', echo = FALSE}
-for(core in params$cpucolnames){
-  cat(paste0(toupper(gsub("_", " ", core)), " & \\% & [", toupper(gsub("_", ":", core)), "]Totl\\% \\\\ \n"))
-}
-```
 ```{r results='asis', echo = FALSE}
 if(evaluateGpuMeasurement){
   cat("\\hline\n\\multicolumn{3}{l}{\\textbf{nvidia-smi}} \\\\\n")
@@ -366,14 +353,9 @@ For each parameter, there is a figure that depicts the raw measurement results, 
 parameter & scenario graph & baseline graph \\ \hline
 CPU load & figure \ref{fig:hw_cpu} & figure \ref{fig:hw_cpu_bl} \\
 RAM usage & figure \ref{fig:hw_ram} & figure \ref{fig:hw_ram_bl} \\
-disk activity & figure \ref{fig:hw_hdd} & figure \ref{fig:hw_hdd_bl} \\
+HDD activity & figure \ref{fig:hw_hdd} & figure \ref{fig:hw_hdd_bl} \\
 Network traffic & figure \ref{fig:hw_nw} & figure \ref{fig:hw_nw_bl} \\
-CPU core loads overview & \multicolumn{2}{l}{figure \ref{fig:hw_cores_all_in_one}}\\
-```{r results='asis', echo = FALSE}
-for(core in params$cpucolnames){
-  cat(paste0("Load of ", gsub("_", " core ", toupper(core)), " & figure \\ref{fig:hw_", core, "} & figure \\ref{fig:hw_", core, "_bl} \\\\ \n"))
-}
-```
+
 ```{r results='asis', echo = FALSE}
 if(evaluateGpuMeasurement){
   cat("GPU Performance state & figure \\ref{fig:gpu_pstate} & figure \\ref{fig:gpu_pstate_bl} \\\\\n")
@@ -388,8 +370,11 @@ if(evaluateGpuMeasurement){
   cat("Frequency of graphics (shader) clock & figure \\ref{fig:gpu_gc} & figure \\ref{fig:gpu_gc_bl}\n")
 }
 ```
+
 \end{tabular}
 \end{table}
+
+![Graph of the processor load\label{fig:hw_cpu}](`r paste(params$graphicsFolder, "cpu_usage.png", sep="/")`)
 
 ![Graph of the baseline processor load\label{fig:hw_cpu_bl}](`r paste(params$graphicsFolder, "cpu_usage_baseline.png", sep="/")`)
 
@@ -397,17 +382,15 @@ if(evaluateGpuMeasurement){
 
 ![Graph of the baseline RAM usage\label{fig:hw_ram_bl}](`r paste(params$graphicsFolder, "ram_usage_baseline.png", sep="/")`)
 
-![Graph of the disk activity\label{fig:hw_hdd}](`r paste(params$graphicsFolder, "hdd_activity.png", sep="/")`)
+![Graph of the HDD activity\label{fig:hw_hdd}](`r paste(params$graphicsFolder, "hdd_activity.png", sep="/")`)
 
-![Graph of the baseline disk activity\label{fig:hw_hdd_bl}](`r paste(params$graphicsFolder, "hdd_activity_baseline.png", sep="/")`)
+![Graph of the baseline HDD activity\label{fig:hw_hdd_bl}](`r paste(params$graphicsFolder, "hdd_activity_baseline.png", sep="/")`)
 
 ![Graph of the network traffic\label{fig:hw_nw}](`r paste(params$graphicsFolder, "network_traffic.png", sep="/")`)
 
 ![Graph of the baseline network traffic\label{fig:hw_nw_bl}](`r paste(params$graphicsFolder, "network_traffic_baseline.png", sep="/")`)
 
-
 ```{r results='asis', echo = FALSE}
-
 if(evaluateGpuMeasurement){
   cat("![Graph of the GPU Performance state\\label{fig:gpu_pstate}](", paste(params$graphicsFolder, "gpu_pstate.png", sep="/"), ")\n\n", sep = "")
 
@@ -453,10 +436,11 @@ if(evaluateGpuMeasurement){
 
 \clearpage
 
+
 ## Analysis Results
 
-This section contains the descriptive analysis of each parameter. The mean usage that is induced by the scenario $\overline{x}(Parameter_{S})$ is calculated as the mean value of the measurement testruns $\overline{x}(Parameter_{T})$ from which the mean value of the baseline $\overline{x}(Parameter_{B})$ is subtracted. Thus, the average value is calculated as
-$$\overline{x}(Parameter_{S}) = \overline{x}(Parameter_{T}) - \overline{x}(Parameter_{B})\text{.}$$
+This section contains the descriptive analysis of each parameter. The mean usage is calculated as the mean value of the measurement testruns $\overline{x}(Parameter_{T})$ from which the mean value of the baseline $\overline{x}(Parameter_{B})$ is subtracted. Thus, the average value is calculated as
+$$\overline{x}(Parameter_{ML}) = \overline{x}(Parameter_{T}) - \overline{x}(Parameter_{B})\text{.}$$
 
 Tables \ref{tab:hardwareOverview} and \ref{tab:hardwareResults} list the resulting means for each parameter and baseline.
 
@@ -485,10 +469,6 @@ for(i in 1:length(params$performanceMeasurement)){
   nwMeans[i] <- mean(as.numeric(params$performanceMeasurement[[i]]$networkTraffic))
 }
 nwMeansTable <- describe(nwMeans, IQR = T)
-
-cpuCoresMeansTables <- list()
-cpuCoreMeansPerTestrun <- list()
-i <- 1
 
 # Calculate the gpu utilization
 if(evaluateGpuMeasurement){
@@ -566,10 +546,6 @@ for(i in 1:length(params$performanceBaseline)){
 }
 nwMeansBaselineTable <- describe(nwMeansBaseline, IQR = T)
 
-cpuCoresMeansBaselineTables <- list()
-cpuCoreMeansPerBaseline <- list()
-i <- 1
-
 # Calculate the baseline gpu utilization
 if(evaluateGpuMeasurement){
   temperatureMeansBaseline <- NULL
@@ -638,44 +614,33 @@ overviewTable <- rbind(
   nwMeansTable[, c("n","mean", "sd", "median", "min", "max", "range", "IQR")],
   nwMeansBaselineTable[, c("n","mean", "sd", "median", "min", "max", "range", "IQR")]
 )
+  rownames(overviewTable) <- c("CPU load [%]", "CPU baseline [%]", "RAM usage [GB]", "RAM baseline [GB]", "disk activity [kB]", "disk baseline [kB]", "Network traffic [kB]", "Network baseline [kB]")
+  if(evaluateGpuMeasurement){
+    overviewTable <- rbind(overviewTable,
+      temperatureMeansTable[, c("n","mean", "sd", "median", "min", "max", "range", "IQR")],
+      temperatureMeansBaselineTable[, c("n","mean", "sd", "median", "min", "max", "range", "IQR")],
+      gpuMeansTable[, c("n","mean", "sd", "median", "min", "max", "range", "IQR")],
+      gpuMeansBaselineTable[, c("n","mean", "sd", "median", "min", "max", "range", "IQR")],
+      memUtilMeansTable[, c("n","mean", "sd", "median", "min", "max", "range", "IQR")],
+      memUtilMeansBaselineTable[, c("n","mean", "sd", "median", "min", "max", "range", "IQR")],
+      memMibMeansTable[, c("n","mean", "sd", "median", "min", "max", "range", "IQR")],
+      memMibMeansBaselineTable[, c("n","mean", "sd", "median", "min", "max", "range", "IQR")],
+      smClockMeansTable[, c("n","mean", "sd", "median", "min", "max", "range", "IQR")],
+      smClockMeansBaselineTable[, c("n","mean", "sd", "median", "min", "max", "range", "IQR")],
+      memClockMeansTable[, c("n","mean", "sd", "median", "min", "max", "range", "IQR")],
+      memClockMeansBaselineTable[, c("n","mean", "sd", "median", "min", "max", "range", "IQR")],
+      gpuClockMeansTable[, c("n","mean", "sd", "median", "min", "max", "range", "IQR")],
+      gpuClockMeansBaselineTable[, c("n","mean", "sd", "median", "min", "max", "range", "IQR")]
+    )
+    #rownames(overviewTable)[(nrow(overviewTable)-13):nrow(overviewTable)] <- c("GPU temperature [°C]", "GPU temp baseline [°C]", "GPU load [%]", "GPU baseline [%]", "GPU memory [%]", "GPU memory baseline [%]", "GPU memory [MiB]", "GPU memory baseline [MiB]", "SM clock [MHz]", "SM clock baseline [MHz]", "Memory clock [MHz]", "Memory clock baseline [MHz]", "Graphics clock [MHz]", "Graphics clock baseline [MHz]")
+    rownames(overviewTable) <- c("CPU load [%]", "CPU baseline [%]", "RAM usage [GB]", "RAM baseline [GB]", "HDD activity [kB]", "HDD baseline [kB]", "Network traffic [kB]", "Network baseline [kB]", "GPU temperature [°C]", "GPU temp baseline [°C]", "GPU load [%]", "GPU baseline [%]", "GPU memory [%]", "GPU memory baseline [%]", "GPU memory [MiB]", "GPU memory baseline [MiB]", "SM clock [MHz]", "SM clock baseline [MHz]", "Memory clock [MHz]", "Memory clock baseline [MHz]", "Graphics clock [MHz]", "Graphics clock baseline [MHz]")
+  }
 
-rownames(overviewTable) <- c("CPU load [%]", "CPU baseline [%]", "RAM usage [GB]", "RAM baseline [GB]", "disk activity [kB]", "disk baseline [kB]", "Network traffic [kB]", "Network baseline [kB]")
-
-i <- 1
-for(core in cpuCoresMeansBaselineTables){
-  overviewTable <- rbind(overviewTable, core[, c("n","mean", "sd", "median", "min", "max", "range", "IQR")])
-  rownames(overviewTable)[nrow(overviewTable)] <- paste0(toupper(gsub("_", " ", cpucolnamesbaseline[i])), " baseline [%]")
-  i <- i + 1
-}
-
-if(evaluateGpuMeasurement){
-  overviewTable <- rbind(overviewTable,
-    temperatureMeansTable[, c("n","mean", "sd", "median", "min", "max", "range", "IQR")],
-    temperatureMeansBaselineTable[, c("n","mean", "sd", "median", "min", "max", "range", "IQR")],
-    gpuMeansTable[, c("n","mean", "sd", "median", "min", "max", "range", "IQR")],
-    gpuMeansBaselineTable[, c("n","mean", "sd", "median", "min", "max", "range", "IQR")],
-    memUtilMeansTable[, c("n","mean", "sd", "median", "min", "max", "range", "IQR")],
-    memUtilMeansBaselineTable[, c("n","mean", "sd", "median", "min", "max", "range", "IQR")],
-    memMibMeansTable[, c("n","mean", "sd", "median", "min", "max", "range", "IQR")],
-    memMibMeansBaselineTable[, c("n","mean", "sd", "median", "min", "max", "range", "IQR")],
-    smClockMeansTable[, c("n","mean", "sd", "median", "min", "max", "range", "IQR")],
-    smClockMeansBaselineTable[, c("n","mean", "sd", "median", "min", "max", "range", "IQR")],
-    memClockMeansTable[, c("n","mean", "sd", "median", "min", "max", "range", "IQR")],
-    memClockMeansBaselineTable[, c("n","mean", "sd", "median", "min", "max", "range", "IQR")],
-    gpuClockMeansTable[, c("n","mean", "sd", "median", "min", "max", "range", "IQR")],
-    gpuClockMeansBaselineTable[, c("n","mean", "sd", "median", "min", "max", "range", "IQR")]
-  )
-  rownames(overviewTable)[(nrow(overviewTable)-13):nrow(overviewTable)] <- c("GPU temperature [°C]", "GPU temp baseline [°C]", "GPU load [%]", "GPU baseline [%]", "GPU memory [%]", "GPU memory baseline [%]", "GPU memory [MiB]", "GPU memory baseline [MiB]", "SM clock [MHz]", "SM clock baseline [MHz]", "Memory clock [MHz]", "Memory clock baseline [MHz]", "Graphics clock [MHz]", "Graphics clock baseline [MHz]")
-}
-
-
-meanspercore <- do.call(rbind.data.frame, cpuCoresMeansTables)$mean
-meanspercoreBaseline <- do.call(rbind.data.frame, cpuCoresMeansBaselineTables)$mean
-
-resultTable <- as.data.frame(cbind(c(mean(cpuMeans), mean(ramMeans), mean(hddMeans), mean(nwMeans), meanspercore),
-  c(mean(cpuMeansBaseline), mean(ramMeansBaseline), mean(hddMeansBaseline), mean(nwMeansBaseline), meanspercoreBaseline),
-  c(mean(cpuMeans) - mean(cpuMeansBaseline), mean(ramMeans) - mean(ramMeansBaseline), mean(hddMeans) - mean(hddMeansBaseline), mean(nwMeans) - mean(nwMeansBaseline), meanspercore - meanspercoreBaseline)))
-
+resultTable <- as.data.frame(cbind(c(mean(cpuMeans), mean(ramMeans), mean(hddMeans), mean(nwMeans)),
+                     c(mean(cpuMeansBaseline), mean(ramMeansBaseline), mean(hddMeansBaseline), mean(nwMeansBaseline)),
+                     c(mean(cpuMeans) - mean(cpuMeansBaseline), mean(ramMeans) - mean(ramMeansBaseline), mean(hddMeans) - mean(hddMeansBaseline), mean(nwMeans) - mean(nwMeansBaseline))))
+resultTable <- cbind(c("CPU load [%]", "RAM usage [GB]", "HDD activity [kB]", "Network traffic [kB]"), resultTable)
+names(resultTable) <- c("parameter", "testruns", "baselines", "Scenario induced")
 
 if(evaluateGpuMeasurement){
   resultTableAddon <- as.data.frame(cbind(c(mean(temperatureMeans), mean(gpuMeans), mean(memUtilMeans), mean(memMibMeans), mean(smClockMeans), mean(memClockMeans), mean(gpuClockMeans)),
@@ -685,6 +650,7 @@ if(evaluateGpuMeasurement){
   names(resultTableAddon) <- c("parameter", "testruns", "baselines", "Scenario induced")
   resultTable <- rbind(resultTable, resultTableAddon)
 }
+
 
 kable(overviewTable, caption = "Hardware usage measurement overview\\label{tab:hardwareOverview}", digits = 3, format.args = )
 kable(resultTable, caption = "Hardware usage results\\label{tab:hardwareResults}", digits = 3)
@@ -737,6 +703,7 @@ if(evaluateGpuMeasurement){
   rm(x)
 }
 ```
+
 
 ```{r echo=FALSE, results='asis'}
 if(evaluateGpuMeasurement){
@@ -807,7 +774,6 @@ if(evaluateGpuMeasurement){
 
 \newpage
 
-
 ## Hardware Results per Testrun
 
 The results for the individual testruns are presented as tables and figures. Table \ref{tab:hw_testrun_results} gives an overview.
@@ -819,7 +785,7 @@ The results for the individual testruns are presented as tables and figures. Tab
 parameter & overview table & overview graph & boxplots \\ \hline
 CPU load & table \ref{tab:hw_cpu} & figure \ref{fig:hw_cpu_overview} & figure \ref{fig:hw_cpu_boxplots}\\
 RAM usage & table \ref{tab:hw_ram} & figure \ref{fig:hw_ram_overview} & figure \ref{fig:hw_ram_boxplots}\\
-disk activity & table \ref{tab:hw_hdd} & figure \ref{fig:hw_hdd_overview} & figure \ref{fig:hw_hdd_boxplots}\\
+HDD activity & table \ref{tab:hw_hdd} & figure \ref{fig:hw_hdd_overview} & figure \ref{fig:hw_hdd_boxplots}\\
 Network traffic & table \ref{tab:hw_nw} & figure \ref{fig:hw_nw_overview} & figure \ref{fig:hw_nw_boxplots}\\
 ```{r results='asis', echo = FALSE}
 if(evaluateGpuMeasurement){
@@ -837,25 +803,25 @@ if(evaluateGpuMeasurement){
 
 \clearpage
 
-### CPU Total
+### CPU
 
 ```{r echo=FALSE, results='asis'}
 #CPU
 resultTable <- as.data.frame(list(c(1:length(cpuMeans), "mean"), c(cpuMeans, mean(cpuMeans)), c(cpuMeans - mean(cpuMeansBaseline), mean(cpuMeans) - mean(cpuMeansBaseline))))
-names(resultTable)<-c("testrun #", "mean CPU load [%]","Scenario induced CPU load [%]")
+names(resultTable)<-c("testrun #", "mean CPU load [%]","ML induced CPU load [%]")
 kable(resultTable, caption="individual CPU measurement results\\label{tab:hw_cpu}", digits = 3)
 ```
 
-```{r echo=FALSE, fig.cap="Plot of the Scenario induced CPU load per measurement\\label{fig:hw_cpu_overview}"}
+```{r echo=FALSE, fig.cap="Plot of the ML induced CPU load per measurement\\label{fig:hw_cpu_overview}"}
 plot(cpuMeans - mean(cpuMeansBaseline), type = "h", main = paste("Overview of the CPU load for the measurements"), xlab = "testrun #", ylab = "CPU load [%]")
 ```
 
-```{r echo=FALSE, fig.cap="Boxplots of the CPU load of the testruns (l) and Scenario induced load (r) \\label{fig:hw_cpu_boxplots}"}
+```{r echo=FALSE, fig.cap="Boxplots of the CPU load of the testruns (l) and ML induced load (r) \\label{fig:hw_cpu_boxplots}"}
 opar <- par(mfrow=c(1, 3))
 par("mar" = par("mar")+1, "cex.axis" = 1.7, "cex.main" = 1.7, "cex.lab" = 1.7)
 boxplot(cpuMeansBaseline, main = paste("baselines"), ylab="CPU load [%]")
 boxplot(cpuMeans, main = paste("testruns"), ylab="CPU load [%]")
-boxplot(cpuMeans - mean(cpuMeansBaseline), main = paste("Scenario induced"), ylab="CPU load [%]")
+boxplot(cpuMeans - mean(cpuMeansBaseline), main = paste("ML induced"), ylab="CPU load [%]")
 par(opar)
 ```
 
@@ -866,44 +832,44 @@ par(opar)
 ```{r echo=FALSE, results='asis'}
 #RAM
 resultTable <- as.data.frame(list(c(1:length(ramMeans), "mean"), c(ramMeans, mean(ramMeans)), c(ramMeans - mean(ramMeansBaseline), mean(ramMeans) - mean(ramMeansBaseline))))
-names(resultTable)<-c("testrun #", "mean RAM usage [%]","Scenario induced RAM usage [%]")
+names(resultTable)<-c("testrun #", "mean RAM usage [%]","ML induced RAM usage [%]")
 kable(resultTable, caption="individual RAM measurement results\\label{tab:hw_ram}", digits = 3)
 ```
 
-```{r echo=FALSE, fig.cap="Plot of the Scenario induced RAM usage per measurement\\label{fig:hw_ram_overview}"}
+```{r echo=FALSE, fig.cap="Plot of the ML induced RAM usage per measurement\\label{fig:hw_ram_overview}"}
 plot(ramMeans - mean(ramMeansBaseline), type = "h", main = paste("Overview of the RAM usage for the measurements"), xlab = "testrun #", ylab = "RAM usage [%]")
 ```
 
-```{r echo=FALSE, fig.cap="Boxplots of the RAM usage of the testruns (l) and Scenario induced load (r) \\label{fig:hw_ram_boxplots}"}
+```{r echo=FALSE, fig.cap="Boxplots of the RAM usage of the testruns (l) and ML induced load (r) \\label{fig:hw_ram_boxplots}"}
 opar <- par(mfrow=c(1, 3))
 par("mar" = par("mar")+1, "cex.axis" = 1.7, "cex.main" = 1.7, "cex.lab" = 1.7)
 boxplot(ramMeansBaseline, main = paste("baselines"), ylab="RAM usage [%]")
 boxplot(ramMeans, main = paste("testruns"), ylab="RAM usage [%]")
-boxplot(ramMeans - mean(ramMeansBaseline), main = paste("Scenario induced"), ylab="RAM usage [%]")
+boxplot(ramMeans - mean(ramMeansBaseline), main = paste("ML induced"), ylab="RAM usage [%]")
 par(opar)
 ```
 
 \clearpage
 
-### Disk
+### HDD
 
 ```{r echo=FALSE, results='asis'}
-#disk
+#HDD
 resultTable <- as.data.frame(list(c(1:length(hddMeans), "mean"), c(hddMeans, mean(hddMeans)), c(hddMeans - mean(hddMeansBaseline), mean(hddMeans) - mean(hddMeansBaseline))))
-names(resultTable)<-c("testrun #", "mean disk activity [kB]","Scenario induced disk activity [kB]")
-kable(resultTable, caption="individual disk measurement results\\label{tab:hw_hdd}", digits = 3)
+names(resultTable)<-c("testrun #", "mean HDD activity [kB]","ML induced HDD activity [kB]")
+kable(resultTable, caption="individual HDD measurement results\\label{tab:hw_hdd}", digits = 3)
 ```
 
-```{r echo=FALSE, fig.cap="Plot of the Scenario induced disk activity per measurement\\label{fig:hw_hdd_overview}"}
-plot(hddMeans - mean(hddMeansBaseline), type = "h", main = paste("Overview of the disk activity for the measurements"), xlab = "testrun #", ylab = "disk activity [kB]")
+```{r echo=FALSE, fig.cap="Plot of the ML induced HDD activity per measurement\\label{fig:hw_hdd_overview}"}
+plot(hddMeans - mean(hddMeansBaseline), type = "h", main = paste("Overview of the HDD activity for the measurements"), xlab = "testrun #", ylab = "HDD activity [kB]")
 ```
 
-```{r echo=FALSE, fig.cap="Boxplots of the disk activity of the testruns (l) and Scenario induced load (r) \\label{fig:hw_hdd_boxplots}"}
+```{r echo=FALSE, fig.cap="Boxplots of the HDD activity of the testruns (l) and ML induced load (r) \\label{fig:hw_hdd_boxplots}"}
 opar <- par(mfrow=c(1, 3))
 par("mar" = par("mar")+1, "cex.axis" = 1.7, "cex.main" = 1.7, "cex.lab" = 1.7)
-boxplot(hddMeansBaseline, main = paste("baselines"), ylab="disk activity [kB]")
-boxplot(hddMeans, main = paste("testruns"), ylab="disk activity [kB]")
-boxplot(hddMeans - mean(hddMeansBaseline), main = paste("Scenario induced"), ylab="disk activity [kB]")
+boxplot(hddMeansBaseline, main = paste("baselines"), ylab="HDD activity [kB]")
+boxplot(hddMeans, main = paste("testruns"), ylab="HDD activity [kB]")
+boxplot(hddMeans - mean(hddMeansBaseline), main = paste("ML induced"), ylab="HDD activity [kB]")
 par(opar)
 ```
 
@@ -914,20 +880,20 @@ par(opar)
 ```{r echo=FALSE, results='asis'}
 #Network
 resultTable <- as.data.frame(list(c(1:length(nwMeans), "mean"), c(nwMeans, mean(nwMeans)), c(nwMeans - mean(nwMeansBaseline), mean(nwMeans) - mean(nwMeansBaseline))))
-names(resultTable)<-c("testrun #", "mean network traffic [kB]","Scenario induced network traffic [kB]")
+names(resultTable)<-c("testrun #", "mean network traffic [kB]","ML induced network traffic [kB]")
 kable(resultTable, caption="individual network measurement results\\label{tab:hw_nw}", digits = 3)
 ```
 
-```{r echo=FALSE, fig.cap="Plot of the Scenario induced network traffic per measurement\\label{fig:hw_nw_overview}"}
+```{r echo=FALSE, fig.cap="Plot of the ML induced network traffic per measurement\\label{fig:hw_nw_overview}"}
 plot(nwMeans - mean(nwMeansBaseline), type = "h", main = paste("Overview of the network traffic for the measurements"), xlab = "testrun #", ylab = "network traffic [kB]")
 ```
 
-```{r echo=FALSE, fig.cap="Boxplots of the network traffic of the testruns (l) and Scenario induced load (r) \\label{fig:hw_nw_boxplots}"}
+```{r echo=FALSE, fig.cap="Boxplots of the network traffic of the testruns (l) and ML induced load (r) \\label{fig:hw_nw_boxplots}"}
 opar <- par(mfrow=c(1, 3))
 par("mar" = par("mar")+1, "cex.axis" = 1.7, "cex.main" = 1.7, "cex.lab" = 1.7)
 boxplot(nwMeansBaseline, main = paste("baselines"), ylab="network traffic [kB]")
 boxplot(nwMeans, main = paste("testruns"), ylab="network traffic [kB]")
-boxplot(nwMeans - mean(nwMeansBaseline), main = paste("Scenario induced"), ylab="network traffic [kB]")
+boxplot(nwMeans - mean(nwMeansBaseline), main = paste("ML induced"), ylab="network traffic [kB]")
 par(opar)
 ```
 
@@ -1198,50 +1164,64 @@ performanceMeansAction$ram <- performanceMeansAction$ram/1024/1024
 
 for(action in actionNames){
   cat("###", action, "\n\n")
-{
-    resultTableActions <- c(
-      mean(performanceMeansAction[which(startActions$text == action), "processorTime"], na.rm = T),
-      mean(performanceMeansAction[which(startActions$text == action), "ram"], na.rm = T),
-      mean(performanceMeansAction[which(startActions$text == action), "hddActivity"], na.rm = T),
-      mean(performanceMeansAction[which(startActions$text == action), "networkTraffic"], na.rm = T))
-   
-    if(evaluateGpuMeasurement){
-      baselineRT <- c(mean(cpuMeansBaseline), mean(ramMeansBaseline), mean(hddMeansBaseline), mean(nwMeansBaseline), meanspercoreBaseline, mean(temperatureMeansBaseline), mean(gpuMeansBaseline), mean(memUtilMeansBaseline), mean(memMibMeansBaseline), mean(smClockMeansBaseline), mean(memClockMeansBaseline), mean(gpuClockMeansBaseline))
-      inducedRT <- resultTableActions - c(mean(cpuMeansBaseline), mean(ramMeansBaseline), mean(hddMeansBaseline), mean(nwMeansBaseline), meanspercoreBaseline, mean(temperatureMeansBaseline), mean(gpuMeansBaseline), mean(memUtilMeansBaseline), mean(memMibMeansBaseline), mean(smClockMeansBaseline), mean(memClockMeansBaseline), mean(gpuClockMeansBaseline))
-    } else {
-      baselineRT <- c(mean(cpuMeansBaseline), mean(ramMeansBaseline), mean(hddMeansBaseline), mean(nwMeansBaseline), meanspercoreBaseline)
-      inducedRT <- resultTableActions - c(mean(cpuMeansBaseline), mean(ramMeansBaseline), mean(hddMeansBaseline), mean(nwMeansBaseline), meanspercoreBaseline)
-    }
+  resultTableActions <- data.frame(c(
+    mean(performanceMeansAction[which(startActions$text == action), "processorTime"], na.rm = T),
+    mean(performanceMeansAction[which(startActions$text == action), "ram"], na.rm = T),
+    mean(performanceMeansAction[which(startActions$text == action), "hddActivity"], na.rm = T),
+    mean(performanceMeansAction[which(startActions$text == action), "networkTraffic"], na.rm = T))
+  )
+  if(evaluateGpuMeasurement){
+    resultTableActions <- rbind(resultTableActions,
+      mean(performanceMeansAction[which(startActions$text == action), "gpu_temp"], na.rm = T),
+      mean(performanceMeansAction[which(startActions$text == action), "gpu"], na.rm = T),
+      mean(performanceMeansAction[which(startActions$text == action), "gpu_mem"], na.rm = T),
+      mean(performanceMeansAction[which(startActions$text == action), "gpu_mem_mib"], na.rm = T),
+      mean(performanceMeansAction[which(startActions$text == action), "gpu_sm_clock"], na.rm = T),
+      mean(performanceMeansAction[which(startActions$text == action), "gpu_mem_clock"], na.rm = T),
+      mean(performanceMeansAction[which(startActions$text == action), "gpu_clock"], na.rm = T))
+  }
     
-    resultTableActions <- data.frame(resultTableActions)
-    names(resultTableActions) <- "means"
-    resultTableActions <- cbind(resultTableActions, baselineRT, inducedRT)
+  if(evaluateGpuMeasurement){
+    baselineRT <- c(mean(cpuMeansBaseline), mean(ramMeansBaseline), mean(hddMeansBaseline), mean(nwMeansBaseline), mean(temperatureMeansBaseline), mean(gpuMeansBaseline), mean(memUtilMeansBaseline), mean(memMibMeansBaseline), mean(smClockMeansBaseline), mean(memClockMeansBaseline), mean(gpuClockMeansBaseline))
+    inducedRT <- resultTableActions - c(mean(cpuMeansBaseline), mean(ramMeansBaseline), mean(hddMeansBaseline), mean(nwMeansBaseline), mean(temperatureMeansBaseline), mean(gpuMeansBaseline), mean(memUtilMeansBaseline), mean(memMibMeansBaseline), mean(smClockMeansBaseline), mean(memClockMeansBaseline), mean(gpuClockMeansBaseline))
+  } else {
+    baselineRT <- c(mean(cpuMeansBaseline), mean(ramMeansBaseline), mean(hddMeansBaseline), mean(nwMeansBaseline))
+    inducedRT <- resultTableActions - c(mean(cpuMeansBaseline), mean(ramMeansBaseline), mean(hddMeansBaseline), mean(nwMeansBaseline))
+  }
+  
+  resultTableActions <- data.frame(resultTableActions)
+  names(resultTableActions) <- "means"
+  resultTableActions <- cbind(resultTableActions, baselineRT, inducedRT)
+  
+  names(resultTableActions) <- c("mean value", "mean value of baseline", "scenario induced")
+  if(evaluateGpuMeasurement){
+    rownames(resultTableActions) <- c("CPU load [%]", "RAM usage [GB]", "disk activity [kB]", "Network traffic [kB]", "GPU temperature [°C]", "GPU load [%]", "GPU memory load [%]", "GPU memory allocation [MiB]", "SM clock frequency [MHz]", "GPU memory clock frequency [MHz]", "GPU clock frequency [MHz]")
+  } else {
+    rownames(resultTableActions) <- c("CPU load [%]", "RAM usage [GB]", "disk activity [kB]", "Network traffic [kB]")
+  }
+  
+  print(kable(resultTableActions, caption="Mean measurement results for action", digits = 3))
+  cat("\n\n")
     
-    names(resultTableActions) <- c("mean value", "mean value of baseline", "scenario induced")
+  if(evaluateGpuMeasurement){
+    # Calculate Watthours
+    gpuPowerMeansActionTable <- describe(gpuPowerMeansAction[which(startActions$text == action)], IQR = T)
+    gpuWatthoursAction <- gpuPowerMeansAction[which(startActions$text == action)] * actionsDescriptionTable[[action]]$mean / 3600
     
-    print(kable(resultTableActions, caption="Mean measurement results for action", digits = 3))
-    cat("\n\n")
+    gpuWatthoursActionTable <- describe(gpuWatthoursAction, IQR = T)
     
-    if(evaluateGpuMeasurement){
-      # Calculate Watthours
-      gpuPowerMeansActionTable <- describe(gpuPowerMeansAction[which(startActions$text == action)], IQR = T)
-      gpuWatthoursAction <- gpuPowerMeansAction[which(startActions$text == action)] * actionsDescriptionTable[[action]]$mean / 3600
-      
-      gpuWatthoursActionTable <- describe(gpuWatthoursAction, IQR = T)
-      
-      baselineGpuWatthoursAction <- gpuPowerBaselineMeans * actionsDescriptionTable[[action]]$mean / 3600
-      baselineGpuWatthoursActionTable <- describe(baselineGpuWatthoursAction, IQR = T)
-      
-      resultTable <- rbind(gpuPowerMeansActionTable[, c("n","mean", "sd", "median", "min", "max", "range", "IQR")], gpuPowerBaselineMeansTable[, c("n","mean", "sd", "median", "min", "max", "range", "IQR")], gpuWatthoursActionTable[, c("n","mean", "sd", "median", "min", "max", "range", "IQR")], baselineGpuWatthoursActionTable[, c("n","mean", "sd", "median", "min", "max", "range", "IQR")])
-      rownames(resultTable) <- c("action GPU power [W]", "baseline GPU power [W]", "action GPU energy [Wh]", "baseline GPU energy [Wh]")
-      
-      print(kable(resultTable, caption="GPU Power and energy overview for action", digits = 3))
-      
-      adjustedGpuBaselineWatthoursAction <- baselineGpuWatthoursActionTable$mean / baselineDescription$mean * actionsDescriptionTable[[action]]$mean
-      softwareGpuWatthoursAction <- gpuWatthoursActionTable$mean - adjustedGpuBaselineWatthoursAction
-      
-      cat(paste0("\n\n\\textbf{Average GPU energy consumption induced during action: ", format(round(softwareGpuWatthoursAction, 3), nsmall = 3), "~Wh = ", format(round(gpuWatthoursActionTable$mean, 3), nsmall = 3), "~Wh (action GPU energy) - ", format(round(adjustedGpuBaselineWatthoursAction, 3), nsmall = 3), "~Wh (adjusted baseline GPU energy)}.\n\n"))
-    }
+    baselineGpuWatthoursAction <- gpuPowerBaselineMeans * actionsDescriptionTable[[action]]$mean / 3600
+    baselineGpuWatthoursActionTable <- describe(baselineGpuWatthoursAction, IQR = T)
+    
+    resultTable <- rbind(gpuPowerMeansActionTable[, c("n","mean", "sd", "median", "min", "max", "range", "IQR")], gpuPowerBaselineMeansTable[, c("n","mean", "sd", "median", "min", "max", "range", "IQR")], gpuWatthoursActionTable[, c("n","mean", "sd", "median", "min", "max", "range", "IQR")], baselineGpuWatthoursActionTable[, c("n","mean", "sd", "median", "min", "max", "range", "IQR")])
+    rownames(resultTable) <- c("action GPU power [W]", "baseline GPU power [W]", "action GPU energy [Wh]", "baseline GPU energy [Wh]")
+    
+    print(kable(resultTable, caption="GPU Power and energy overview for action", digits = 3))
+    
+    adjustedGpuBaselineWatthoursAction <- baselineGpuWatthoursActionTable$mean / baselineDescription$mean * actionsDescriptionTable[[action]]$mean
+    softwareGpuWatthoursAction <- gpuWatthoursActionTable$mean - adjustedGpuBaselineWatthoursAction
+    
+    cat(paste0("\n\n\\textbf{Average GPU energy consumption induced during action: ", format(round(softwareGpuWatthoursAction, 3), nsmall = 3), "~Wh = ", format(round(gpuWatthoursActionTable$mean, 3), nsmall = 3), "~Wh (action GPU energy) - ", format(round(adjustedGpuBaselineWatthoursAction, 3), nsmall = 3), "~Wh (adjusted baseline GPU energy)}.\n\n"))
   }
 }
 ```
