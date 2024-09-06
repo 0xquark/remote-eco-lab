@@ -67,14 +67,14 @@ fi
 
 # Loop running for 30 times
 # Start loop
-for ((i = 1 ; i <= 5; i++)); do
+for ((i = 1 ; i <= 30; i++)); do
 
     # Copy PDF to home directory
     # so PDF is identical every time
     cp ~/Documents/okular/20yearsofKDE.pdf ~/Documents/20yearsofKDE.pdf
 
     # Burn in time
-    syncUp 10 #60
+    syncUp 60
 
     # Start iteration
     echo "iteration $i;$(date -I) $(date +%T);startTestrun" >> ~/log_sus.csv
@@ -462,8 +462,7 @@ for ((i = 1 ; i <= 5; i++)); do
     echo " stop iteration "
     echo "iteration $i;$(date -I) $(date +%T);stopTestrun" >> ~/log_sus.csv
 
-    # cool down
-    syncUp 10
+    syncUp 1
 
     ## clean up
     # remove logs
@@ -472,6 +471,9 @@ for ((i = 1 ; i <= 5; i++)); do
     rm -r ~/.local/share/okular/*
     # delete annotated PDF
     rm ~/Documents/20yearsofKDE.pdf
+
+    # cool down
+    syncUp 30
 
     clear
 
