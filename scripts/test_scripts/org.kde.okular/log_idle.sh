@@ -27,10 +27,10 @@ rm -f ~/.config/okularrc
 rm -f ~/.config/okularpartrc
 rm -f -r ~/.local/share/okular/*
 
-for ((i = 1; i <= 5; i++)); do
+for ((i = 1; i <= 10; i++)); do
 
     # burn in
-    syncUp 10 #60
+    syncUp 60
 
     # start
     echo "iteration $i;$(date -I) $(date +%T);startTestrun" >> ~/log_idle.csv
@@ -62,13 +62,15 @@ for ((i = 1; i <= 5; i++)); do
     echo " stop iteration "
     echo "iteration $i;$(date -I) $(date +%T);stopTestrun" >> ~/log_idle.csv
 
-    # cool down
-    syncUp 10
+    syncUp 1
 
     # Remove logs
     rm ~/.config/okularrc
     rm ~/.config/okularpartrc
     rm -r ~/.local/share/okular/*
+
+    # cool down
+    syncUp 30
 
     clear
 
