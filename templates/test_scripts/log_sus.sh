@@ -5,9 +5,6 @@
 # Make sure language is set to en_us
 setxkbmap us
 
-# import custom keyboard shortcuts
-./configuration.sh
-
 # Log file names start with today's date, so new log file name is given if running past midnight.
 
 # syncUp unction to synchronize code execution with real-world time:
