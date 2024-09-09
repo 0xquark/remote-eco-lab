@@ -48,7 +48,7 @@ for ((i = 1; i <= 2; i++)); do
 
     # leave open for time (in seconds)
     # for SUS minus start pause minus wrap-up
-    syncUp 201
+    syncUp 10 #201
 
     # wrap-up
     # quit okular

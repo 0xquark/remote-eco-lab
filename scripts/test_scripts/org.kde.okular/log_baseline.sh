@@ -24,7 +24,7 @@ for ((i = 1; i <= 2; i++)); do
 
     # leave running for time (in seconds)
     # for SUS
-    syncUp 210
+    syncUp 10 #210
 
     # stop iteration
     echo " stop iteration "
