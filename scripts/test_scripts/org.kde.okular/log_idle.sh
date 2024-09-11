@@ -30,7 +30,7 @@ rm -f -r ~/.local/share/okular/*
 for ((i = 1; i <= 2; i++)); do
 
     # burn in
-    syncUp 60
+    syncUp 10 # 60
 
     # start
     echo "iteration $i;$(date -I) $(date +%T);startTestrun" >> ~/log_idle.csv
@@ -48,7 +48,7 @@ for ((i = 1; i <= 2; i++)); do
 
     # leave open for time (in seconds)
     # for SUS minus start pause minus wrap-up
-    syncUp 10 #201
+    syncUp 10 #209
 
     # wrap-up
     # quit okular
@@ -70,7 +70,7 @@ for ((i = 1; i <= 2; i++)); do
     rm -r ~/.local/share/okular/*
 
     # cool down
-    syncUp 30
+    syncUp 10 # 30
 
     clear
 
