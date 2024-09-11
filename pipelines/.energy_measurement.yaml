@@ -122,17 +122,25 @@ result:
   - cd remote-eco-lab/scripts/Preprocessing
   - cp Preprocessing.R ~
   - cd ../Measurement 
-  - cp analysis_script.R analysis_script_Report.Rmd analysis_script_functions.R ~/
+  # - cp analysis_script.R analysis_script_Report.Rmd analysis_script_functions.R ~/
+  - cp analysis_script.R analysis_script_Report.Rmd idle_analysis_script.R idle_analysis_script_Report.Rmd analysis_script_functions.R ~/
   # Preprocess Raw data for OSCAR Script
   - Rscript ~/Preprocessing.R test1.csv-joseph-esprimop957-$CURRENT_DATE.tab test2.csv-joseph-esprimop957-$CURRENT_DATE.tab test3.csv-joseph-esprimop957-$CURRENT_DATE.tab $CI_PROJECT_DIR
-  # Run OSCAR Analysis script to generate a report
+  # Run OSCAR Analysis script to generate a report SUS
   - Rscript ~/analysis_script.R
   - cp -r ~/Report.pdf ~/Report.tex ~/graphics ~/Report_files $CI_PROJECT_DIR/
+  # Run OSCAR Analysis script to generate a report for Idle Mode
+  - Rscript ~/idle_analysis_script.R
+  - cp -r ~/Report_Idle.pdf ~/Report_Idle.tex ~/graphics_idle ~/Report_Idle_files $CI_PROJECT_DIR/
   artifacts:
     paths:
      - Report.pdf
      - Report.tex
      - graphics/
      - Report_files
+     - Report_Idle.pdf
+     - Report_Idle.tex
+     - graphics_idle
+     - Report_Idle_files
   rules:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
