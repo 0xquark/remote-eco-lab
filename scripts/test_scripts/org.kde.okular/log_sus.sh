@@ -67,7 +67,7 @@ fi
 
 # Loop running for 30 times
 # Start loop
-for ((i = 1 ; i <= 2; i++)); do
+for ((i = 1 ; i <= 10; i++)); do
 
     # Copy PDF to home directory
     # so PDF is identical every time
@@ -226,12 +226,12 @@ for ((i = 1 ; i <= 2; i++)); do
 
     # Rotate page right twice
     echo " Rotate page right twice "
-    startAction "$i" "Rotate page 1"
+    startAction "$i" "Rotate page right 1"
     xdotool key Ctrl+r
     syncUp 2
     stopAction "$i"
     syncUp 4
-    startAction "$i" "Rotate page 2"
+    startAction "$i" "Rotate page right 2"
     xdotool key Ctrl+r
     syncUp 2
     stopAction "$i"

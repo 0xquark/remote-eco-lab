@@ -13,7 +13,7 @@ syncUp() {
 
 # startAction / stopAction functions not needed
 
-for ((i = 1; i <= 2; i++)); do
+for ((i = 1; i <= 10; i++)); do
 
     # burn in
     syncUp 60
@@ -24,7 +24,7 @@ for ((i = 1; i <= 2; i++)); do
 
     # leave running for time (in seconds)
     # for SUS
-    syncUp 220
+    syncUp 219
 
     # stop iteration
     echo " stop iteration "
