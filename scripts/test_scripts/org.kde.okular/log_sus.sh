@@ -74,7 +74,7 @@ for ((i = 1 ; i <= 2; i++)); do
     cp ~/Documents/okular/20yearsofKDE.pdf ~/Documents/20yearsofKDE.pdf
 
     # Burn in time
-    syncUp 10 #60
+    syncUp 15 #60
 
     # Start iteration
     echo "iteration $i;$(date -I) $(date +%T);startTestrun" >> ~/log_sus.csv
