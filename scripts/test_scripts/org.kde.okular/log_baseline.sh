@@ -16,7 +16,7 @@ syncUp() {
 for ((i = 1; i <= 2; i++)); do
 
     # burn in
-    syncUp 10 # 60
+    syncUp 60
 
     # start
     echo "iteration $i;$(date -I) $(date +%T);startTestrun" >> ~/log_baseline.csv
@@ -24,13 +24,13 @@ for ((i = 1; i <= 2; i++)); do
 
     # leave running for time (in seconds)
     # for SUS
-    syncUp 10 #218
+    syncUp 220
 
     # stop iteration
     echo " stop iteration "
     echo "iteration $i;$(date -I) $(date +%T);stopTestrun" >> ~/log_baseline.csv
 
     # cool down
-    syncUp 10 #30
+    syncUp 30
 
 done

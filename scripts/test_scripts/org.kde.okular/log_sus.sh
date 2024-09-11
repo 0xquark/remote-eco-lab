@@ -74,7 +74,7 @@ for ((i = 1 ; i <= 2; i++)); do
     cp ~/Documents/okular/20yearsofKDE.pdf ~/Documents/20yearsofKDE.pdf
 
     # Burn in time
-    syncUp 15 #60
+    syncUp 60
 
     # Start iteration
     echo "iteration $i;$(date -I) $(date +%T);startTestrun" >> ~/log_sus.csv
@@ -167,31 +167,47 @@ for ((i = 1 ; i <= 2; i++)); do
 
     # Move around the pages
     echo " Move down five pages "
-    startAction "$i" "Move down five pages"
+    startAction "$i" "Move down a page 1"
     xdotool key Down
     syncUp 2
+    stopAction "$i"
+    startAction "$i" "Move down a page 2"
     xdotool key Down
     syncUp 2
+    stopAction "$i"
+    startAction "$i" "Move down a page 3"
     xdotool key Down
     syncUp 2
+    stopAction "$i"
+    startAction "$i" "Move down a page 4"
     xdotool key Down
     syncUp 2
+    stopAction "$i"
+    startAction "$i" "Move down a page 5"
     xdotool key Down
-    syncUp 1
+    syncUp 2
     stopAction "$i"
 
     echo " Move up five pages "
-    startAction "$i" "Move up five pages"
+    startAction "$i" "Move up a page 1"
     xdotool key Up
     syncUp 2
+    stopAction "$i"
+    startAction "$i" "Move up a page 2"
     xdotool key Up
     syncUp 2
+    stopAction "$i"
+    startAction "$i" "Move up a page 3"
     xdotool key Up
     syncUp 2
+    stopAction "$i"
+    startAction "$i" "Move up a page 4"
     xdotool key Up
     syncUp 2
+    stopAction "$i"
+    startAction "$i" "Move up a page 5"
     xdotool key Up
-    syncUp 1
+    syncUp 2
     stopAction "$i"
 
     # Exit
@@ -202,55 +218,84 @@ for ((i = 1 ; i <= 2; i++)); do
     stopAction "$i"
 
     # Move mouse to center of Okular window, click mouse to exit text box
+    echo " Move mouse to center of window "
+    startAction "$i" "Move mouse to center of window"
     xdotool mousemove --window "okular" --polar 0 0 click 1
     syncUp 3
+    stopAction "$i"
 
-    # Rotate page right
+    # Rotate page right twice
     echo " Rotate page right twice "
-    startAction "$i" "Rotate page right twice"
+    startAction "$i" "Rotate page 1"
     xdotool key Ctrl+r
-    syncUp 6
-    xdotool key Ctrl+r
-    syncUp 6
+    syncUp 2
     stopAction "$i"
+    syncUp 4
+    startAction "$i" "Rotate page 2"
+    xdotool key Ctrl+r
+    syncUp 2
+    stopAction "$i"
+    syncUp 4
 
-    # Rotate page left
+    # Rotate page left twice
     echo " Rotate page left twice "
-    startAction "$i" "Rotate page left twice"
+    startAction "$i" "Rotate page left 1"
     xdotool key Ctrl+l
-    syncUp 6
-    xdotool key Ctrl+l
-    syncUp 6
+    syncUp 2
     stopAction "$i"
+    syncUp 4
+    echo " Rotate page left 2 "
+    startAction "$i" "Rotate page left 2"
+    xdotool key Ctrl+l
+    syncUp 2
+    stopAction "$i"
+    syncUp 4
 
     # Move around the pages
     echo " Move forward five pages "
-    startAction "$i" "Move forward five pages"
+    startAction "$i" "Move forward a page 1"
     xdotool key Right
     syncUp 2
+    stopAction "$i"
+    startAction "$i" "Move forward a page 2"
     xdotool key Right
     syncUp 2
+    stopAction "$i"
+    startAction "$i" "Move forward a page 3"
     xdotool key Right
     syncUp 2
+    stopAction "$i"
+    startAction "$i" "Move forward a page 4"
     xdotool key Right
     syncUp 2
+    stopAction "$i"
+    startAction "$i" "Move forward a page 5"
     xdotool key Right
     syncUp 2
     stopAction "$i"
 
     echo " Move backward five pages "
-    startAction "$i" "Move backward five pages"
+    startAction "$i" "Move backward a page 1"
     xdotool key Left
     syncUp 2
-    xdotool key Left
-    syncUp 2
-    xdotool key Left
-    syncUp 2
-    xdotool key Left
-    syncUp 2
-    xdotool key Left
-    syncUp 3
     stopAction "$i"
+    startAction "$i" "Move backward a page 2"
+    xdotool key Left
+    syncUp 2
+    stopAction "$i"
+    startAction "$i" "Move backward a page 3"
+    xdotool key Left
+    syncUp 2
+    stopAction "$i"
+    startAction "$i" "Move backward a page 4"
+    xdotool key Left
+    syncUp 2
+    stopAction "$i"
+    startAction "$i" "Move backward a page 5"
+    xdotool key Left
+    syncUp 2
+    stopAction "$i"
+    syncUp 1
 
     # Zoom out
     echo " Zoom to 100 percent "
@@ -260,16 +305,24 @@ for ((i = 1 ; i <= 2; i++)); do
     stopAction "$i"
 
     echo " Zoom to 400 percent "
-    startAction "$i" "Zoom to 400 percent"
     # Zoom in
+    startAction "$i" "Zoom in to 400 percent 1"
     xdotool key Ctrl+plus
     syncUp 1
+    stopAction "$i"
+    startAction "$i" "Zoom in to 400 percent 2"
     xdotool key Ctrl+plus
     syncUp 1
+    stopAction "$i"
+    startAction "$i" "Zoom in to 400 percent 3"
     xdotool key Ctrl+plus
     syncUp 1
+    stopAction "$i"
+    startAction "$i" "Zoom in to 400 percent 4"
     xdotool key Ctrl+plus
     syncUp 1
+    stopAction "$i"
+    startAction "$i" "Zoom in to 400 percent 5"
     xdotool key Ctrl+plus
     syncUp 1
     stopAction "$i"
@@ -286,8 +339,9 @@ for ((i = 1 ; i <= 2; i++)); do
     startAction "$i" "Invert colors"
     # Invert colors
     xdotool key Ctrl+i
-    syncUp 5
+    syncUp 2
     stopAction "$i"
+    syncUp 3
 
 # START PARTIAL REPEAT
 # Note: now goes to page number 42, writes slightly different annotation
@@ -358,49 +412,74 @@ for ((i = 1 ; i <= 2; i++)); do
     syncUp 1
     stopAction "$i"
 
-    # Rotate page right
+    # Rotate page right twice
     echo " Rotate page right twice "
-    startAction "$i" "Rotate page right twice"
+    startAction "$i" "Rotate page right 1"
     xdotool key Ctrl+r
-    syncUp 6
-    xdotool key Ctrl+r
-    syncUp 6
+    syncUp 2
     stopAction "$i"
+    syncUp 4
+    startAction "$i" "Rotate page right 2"
+    xdotool key Ctrl+r
+    syncUp 2
+    stopAction "$i"
+    syncUp 4
 
-    # Rotate page left
+    # Rotate page left twice
     echo " Rotate page left twice "
-    startAction "$i" "Rotate page left twice"
+    startAction "$i" "Rotate page left 1"
     xdotool key Ctrl+l
-    syncUp 6
-    xdotool key Ctrl+l
-    syncUp 7
+    syncUp 2
     stopAction "$i"
+    syncUp 4
+    echo " Rotate page left 2 "
+    startAction "$i" "Rotate page left 2"
+    xdotool key Ctrl+l
+    syncUp 2
+    stopAction "$i"
+    syncUp 4
 
     # Move around the pages
     echo " Move forward five pages "
-    startAction "$i" "Move forward five pages"
+    startAction "$i" "Move forward a page 1"
     xdotool key Right
     syncUp 2
+    stopAction "$i"
+    startAction "$i" "Move forward a page 2"
     xdotool key Right
     syncUp 2
+    stopAction "$i"
+    startAction "$i" "Move forward a page 3"
     xdotool key Right
     syncUp 2
+    stopAction "$i"
+    startAction "$i" "Move forward a page 4"
     xdotool key Right
     syncUp 2
+    stopAction "$i"
+    startAction "$i" "Move forward a page 5"
     xdotool key Right
     syncUp 2
     stopAction "$i"
 
     echo " Move backward five pages "
-    startAction "$i" "Move backward five pages"
+    startAction "$i" "Move backward a page 1"
     xdotool key Left
     syncUp 2
+    stopAction "$i"
+    startAction "$i" "Move backward a page 2"
     xdotool key Left
     syncUp 2
+    stopAction "$i"
+    startAction "$i" "Move backward a page 3"
     xdotool key Left
     syncUp 2
+    stopAction "$i"
+    startAction "$i" "Move backward a page 4"
     xdotool key Left
     syncUp 2
+    stopAction "$i"
+    startAction "$i" "Move backward a page 5"
     xdotool key Left
     syncUp 2
     stopAction "$i"
@@ -413,19 +492,28 @@ for ((i = 1 ; i <= 2; i++)); do
     stopAction "$i"
 
     echo " Zoom to 400 percent "
-    startAction "$i" "Zoom to 400 percent"
     # Zoom in
+    startAction "$i" "Zoom in to 400 percent 1"
     xdotool key Ctrl+plus
     syncUp 1
-    xdotool key Ctrl+plus
-    syncUp 1
-    xdotool key Ctrl+plus
-    syncUp 1
-    xdotool key Ctrl+plus
-    syncUp 1
-    xdotool key Ctrl+plus
-    syncUp 2
     stopAction "$i"
+    startAction "$i" "Zoom in to 400 percent 2"
+    xdotool key Ctrl+plus
+    syncUp 1
+    stopAction "$i"
+    startAction "$i" "Zoom in to 400 percent 3"
+    xdotool key Ctrl+plus
+    syncUp 1
+    stopAction "$i"
+    startAction "$i" "Zoom in to 400 percent 4"
+    xdotool key Ctrl+plus
+    syncUp 1
+    stopAction "$i"
+    startAction "$i" "Zoom in to 400 percent 5"
+    xdotool key Ctrl+plus
+    syncUp 1
+    stopAction "$i"
+    syncUp 1
 
     # Fit to width
     echo " Fit to width "
@@ -438,8 +526,9 @@ for ((i = 1 ; i <= 2; i++)); do
     echo " Invert colors back "
     startAction "$i" "Invert colors back"
     xdotool key Ctrl+i
-    syncUp 4
+    syncUp 2
     stopAction "$i"
+    syncUp 2
 
 # REPEAT OVER
 
@@ -473,7 +562,7 @@ for ((i = 1 ; i <= 2; i++)); do
     rm ~/Documents/20yearsofKDE.pdf
 
     # cool down
-    syncUp 10 # 30
+    syncUp 30
 
     clear
 
