@@ -404,9 +404,9 @@ setwd(saveWd)
 
 #Generate the pdf using RMarkdown
 render(input = rmdLocation, output_file = outputFileName, params = list(
-  title = "KEcoLab Measurement Analysis",
-  subtitle = "A Report From KDE's Lab",
-  measurementName = "Idle Mode",
+  title = "Idle Mode Scenario Analysis",
+  subtitle = "Measurement From KEcoLab",
+  measurementName = "Idle Mode Scenario",
   SUT = SUT,
   startmarkers = startmarkers,
   endmarkers = endmarkers,

@@ -111,7 +111,7 @@ rm(x)
 \newpage
 
 # Energy Consumption
-This section presents the energy consumption analysis, based upon the power measurements, collected with the power meter`r if(evaluateGpuMeasurement){paste0("\\footnote{Power and energy measurements of the GPU are produced in section \\ref{sec:gpu-power}, because they are recorded with nvidia-smi.}")}`. The first graph (Fig. \ref{fig:power}) shows the power consumption of the System under Test (SUT) during the measurement scenario. It contains the individual measurements (grey), the per-second mean (red) and the "startAction"-timestamps of the longest testrun (blue rug). Notice that mean value calculation resembles the individual measurements in the later epochs, because most testruns only needed 45 epochs to reach a validation accuracy of 80%.
+This section presents the energy consumption analysis, based upon the power measurements, collected with the power meter`r if(evaluateGpuMeasurement){paste0("\\footnote{Power and energy measurements of the GPU are produced in section \\ref{sec:gpu-power}, because they are recorded with nvidia-smi.}")}`. The first graph (Fig. \ref{fig:power}) shows the power consumption of the System under Test (SUT) during the measurement scenario. It contains the individual measurements (grey), the per-second mean (red) and the "startAction"-timestamps of the longest testrun (blue rug). <!-- Notice that mean value calculation resembles the individual measurements in the later epochs, because most testruns only needed 45 epochs to reach a validation accuracy of 80%. -->
 
 In an analogous manner, fig. \ref{fig:powerBaseline} shows the power consumption of the baseline measurement (SUT running only in standard configuration without the software product).
 
@@ -278,7 +278,7 @@ dev.off()
 
 ![Plot of the energy consumption induced by the scenario, per action\label{fig:powerWhAction}](`r paste(params$graphicsFolder, "actions/energy_per_action.png", sep="/")`)
 
-```{r results='asis', echo = FALSE}
+<!-- ```{r results='asis', echo = FALSE}
 # Create the model history section (if any)
 if(!is.null(params$modelHistory)){
   cat("\\clearpage\n\n# Model history\n\n")
@@ -288,13 +288,13 @@ if(!is.null(params$modelHistory)){
   cat("\n\n\\clearpage\n\n![Graph of the model loss during training (l) and validation (r) \\label{fig:loss_means}](", params$graphicsFolder, "/model_history/model_loss_mean.png)\n\n", sep = "")
   cat("![Graph of the model accuracy during training (l) and validation (r) \\label{fig:accuracy_means}](", params$graphicsFolder, "/model_history/model_accuracy_mean.png)\n\n", sep = "")
 }
-```
+``` -->
 
 \clearpage
 
 # Hardware Usage
 \label{sec:hardware}
-The analysis of the hardware utilization is, for the most part, analogous to the power analysis. The data is averaged over time and for power measurements, the energy is calculated. Table \ref{tab:hwIndicators} shows which parameters were logged (using the commands in _Measurements/hardware-logging-commands.txt_) and analyzed.
+The analysis of the hardware utilization is, for the most part, analogous to the power analysis. The data is averaged over time and for power measurements, the energy is calculated. Table \ref{tab:hwIndicators} shows which parameters were logged (using the command `collectl -s cdmn -i1 -P --sep 59 -f`) and analyzed.
 
 \begin{table}[ht]
 \caption{Logged hardware indicators}
@@ -808,20 +808,20 @@ if(evaluateGpuMeasurement){
 ```{r echo=FALSE, results='asis'}
 #CPU
 resultTable <- as.data.frame(list(c(1:length(cpuMeans), "mean"), c(cpuMeans, mean(cpuMeans)), c(cpuMeans - mean(cpuMeansBaseline), mean(cpuMeans) - mean(cpuMeansBaseline))))
-names(resultTable)<-c("testrun #", "mean CPU load [%]","ML induced CPU load [%]")
+names(resultTable)<-c("testrun #", "mean CPU load [%]","Scenario induced CPU load [%]")
 kable(resultTable, caption="individual CPU measurement results\\label{tab:hw_cpu}", digits = 3)
 ```
 
-```{r echo=FALSE, fig.cap="Plot of the ML induced CPU load per measurement\\label{fig:hw_cpu_overview}"}
+```{r echo=FALSE, fig.cap="Plot of the scenario induced CPU load per measurement\\label{fig:hw_cpu_overview}"}
 plot(cpuMeans - mean(cpuMeansBaseline), type = "h", main = paste("Overview of the CPU load for the measurements"), xlab = "testrun #", ylab = "CPU load [%]")
 ```
 
-```{r echo=FALSE, fig.cap="Boxplots of the CPU load of the testruns (l) and ML induced load (r) \\label{fig:hw_cpu_boxplots}"}
+```{r echo=FALSE, fig.cap="Boxplots of the CPU load of the testruns (l) and induced load (r) \\label{fig:hw_cpu_boxplots}"}
 opar <- par(mfrow=c(1, 3))
 par("mar" = par("mar")+1, "cex.axis" = 1.7, "cex.main" = 1.7, "cex.lab" = 1.7)
 boxplot(cpuMeansBaseline, main = paste("baselines"), ylab="CPU load [%]")
 boxplot(cpuMeans, main = paste("testruns"), ylab="CPU load [%]")
-boxplot(cpuMeans - mean(cpuMeansBaseline), main = paste("ML induced"), ylab="CPU load [%]")
+boxplot(cpuMeans - mean(cpuMeansBaseline), main = paste("Scenario induced"), ylab="CPU load [%]")
 par(opar)
 ```
 
@@ -832,20 +832,20 @@ par(opar)
 ```{r echo=FALSE, results='asis'}
 #RAM
 resultTable <- as.data.frame(list(c(1:length(ramMeans), "mean"), c(ramMeans, mean(ramMeans)), c(ramMeans - mean(ramMeansBaseline), mean(ramMeans) - mean(ramMeansBaseline))))
-names(resultTable)<-c("testrun #", "mean RAM usage [%]","ML induced RAM usage [%]")
+names(resultTable)<-c("testrun #", "mean RAM usage [%]","Scenario induced RAM usage [%]")
 kable(resultTable, caption="individual RAM measurement results\\label{tab:hw_ram}", digits = 3)
 ```
 
-```{r echo=FALSE, fig.cap="Plot of the ML induced RAM usage per measurement\\label{fig:hw_ram_overview}"}
+```{r echo=FALSE, fig.cap="Plot of the scenario induced RAM usage per measurement\\label{fig:hw_ram_overview}"}
 plot(ramMeans - mean(ramMeansBaseline), type = "h", main = paste("Overview of the RAM usage for the measurements"), xlab = "testrun #", ylab = "RAM usage [%]")
 ```
 
-```{r echo=FALSE, fig.cap="Boxplots of the RAM usage of the testruns (l) and ML induced load (r) \\label{fig:hw_ram_boxplots}"}
+```{r echo=FALSE, fig.cap="Boxplots of the RAM usage of the testruns (l) and induced load (r) \\label{fig:hw_ram_boxplots}"}
 opar <- par(mfrow=c(1, 3))
 par("mar" = par("mar")+1, "cex.axis" = 1.7, "cex.main" = 1.7, "cex.lab" = 1.7)
 boxplot(ramMeansBaseline, main = paste("baselines"), ylab="RAM usage [%]")
 boxplot(ramMeans, main = paste("testruns"), ylab="RAM usage [%]")
-boxplot(ramMeans - mean(ramMeansBaseline), main = paste("ML induced"), ylab="RAM usage [%]")
+boxplot(ramMeans - mean(ramMeansBaseline), main = paste("Scenario induced"), ylab="RAM usage [%]")
 par(opar)
 ```
 
@@ -856,20 +856,20 @@ par(opar)
 ```{r echo=FALSE, results='asis'}
 #HDD
 resultTable <- as.data.frame(list(c(1:length(hddMeans), "mean"), c(hddMeans, mean(hddMeans)), c(hddMeans - mean(hddMeansBaseline), mean(hddMeans) - mean(hddMeansBaseline))))
-names(resultTable)<-c("testrun #", "mean HDD activity [kB]","ML induced HDD activity [kB]")
+names(resultTable)<-c("testrun #", "mean HDD activity [kB]","Scenario induced HDD activity [kB]")
 kable(resultTable, caption="individual HDD measurement results\\label{tab:hw_hdd}", digits = 3)
 ```
 
-```{r echo=FALSE, fig.cap="Plot of the ML induced HDD activity per measurement\\label{fig:hw_hdd_overview}"}
+```{r echo=FALSE, fig.cap="Plot of the scenario induced HDD activity per measurement\\label{fig:hw_hdd_overview}"}
 plot(hddMeans - mean(hddMeansBaseline), type = "h", main = paste("Overview of the HDD activity for the measurements"), xlab = "testrun #", ylab = "HDD activity [kB]")
 ```
 
-```{r echo=FALSE, fig.cap="Boxplots of the HDD activity of the testruns (l) and ML induced load (r) \\label{fig:hw_hdd_boxplots}"}
+```{r echo=FALSE, fig.cap="Boxplots of the HDD activity of the testruns (l) and induced load (r) \\label{fig:hw_hdd_boxplots}"}
 opar <- par(mfrow=c(1, 3))
 par("mar" = par("mar")+1, "cex.axis" = 1.7, "cex.main" = 1.7, "cex.lab" = 1.7)
 boxplot(hddMeansBaseline, main = paste("baselines"), ylab="HDD activity [kB]")
 boxplot(hddMeans, main = paste("testruns"), ylab="HDD activity [kB]")
-boxplot(hddMeans - mean(hddMeansBaseline), main = paste("ML induced"), ylab="HDD activity [kB]")
+boxplot(hddMeans - mean(hddMeansBaseline), main = paste("Scenario induced"), ylab="HDD activity [kB]")
 par(opar)
 ```
 
@@ -880,20 +880,20 @@ par(opar)
 ```{r echo=FALSE, results='asis'}
 #Network
 resultTable <- as.data.frame(list(c(1:length(nwMeans), "mean"), c(nwMeans, mean(nwMeans)), c(nwMeans - mean(nwMeansBaseline), mean(nwMeans) - mean(nwMeansBaseline))))
-names(resultTable)<-c("testrun #", "mean network traffic [kB]","ML induced network traffic [kB]")
+names(resultTable)<-c("testrun #", "mean network traffic [kB]","Scenario induced network traffic [kB]")
 kable(resultTable, caption="individual network measurement results\\label{tab:hw_nw}", digits = 3)
 ```
 
-```{r echo=FALSE, fig.cap="Plot of the ML induced network traffic per measurement\\label{fig:hw_nw_overview}"}
+```{r echo=FALSE, fig.cap="Plot of the scenario induced network traffic per measurement\\label{fig:hw_nw_overview}"}
 plot(nwMeans - mean(nwMeansBaseline), type = "h", main = paste("Overview of the network traffic for the measurements"), xlab = "testrun #", ylab = "network traffic [kB]")
 ```
 
-```{r echo=FALSE, fig.cap="Boxplots of the network traffic of the testruns (l) and ML induced load (r) \\label{fig:hw_nw_boxplots}"}
+```{r echo=FALSE, fig.cap="Boxplots of the network traffic of the testruns (l) and induced load (r) \\label{fig:hw_nw_boxplots}"}
 opar <- par(mfrow=c(1, 3))
 par("mar" = par("mar")+1, "cex.axis" = 1.7, "cex.main" = 1.7, "cex.lab" = 1.7)
 boxplot(nwMeansBaseline, main = paste("baselines"), ylab="network traffic [kB]")
 boxplot(nwMeans, main = paste("testruns"), ylab="network traffic [kB]")
-boxplot(nwMeans - mean(nwMeansBaseline), main = paste("ML induced"), ylab="network traffic [kB]")
+boxplot(nwMeans - mean(nwMeansBaseline), main = paste("Scenario induced"), ylab="network traffic [kB]")
 par(opar)
 ```
 
