@@ -79,7 +79,8 @@ energy_measurement:
    - scp -o StrictHostKeyChecking=no -r -i  ~/.ssh/kecolab karan@$LABPC_IP:~/system-info.txt ${CURRENT_DATE}_system-info.txt
    # Remove all the logs 
    - cd ~/ && rm testreadings1.csv testreadings2.csv testreadings3.csv
-   - ssh -o StrictHostKeyChecking=no -i ~/.ssh/kecolab karan@$LABPC_IP ' export CURRENT_DATE=$(date +%Y%m%d) && rm log_sus.csv log_baseline.csv log_idle.csv test1.csv-joseph-esprimop957-$CURRENT_DATE.tab.gz test2.csv-joseph-esprimop957-$CURRENT_DATE.tab.gz test3.csv-joseph-esprimop957-$CURRENT_DATE.tab.gz test1.csv-joseph-esprimop957.tab.gz test2.csv-joseph-esprimop957.tab.gz test3.csv-joseph-esprimop957.tab.gz *_system-info.txt && cd /tmp/ && rm log_sus.sh log_baseline.sh log_idle.sh'
+   # - ssh -o StrictHostKeyChecking=no -i ~/.ssh/kecolab karan@$LABPC_IP ' export CURRENT_DATE=$(date +%Y%m%d) && rm log_sus.csv log_baseline.csv log_idle.csv test1.csv-joseph-esprimop957-$CURRENT_DATE.tab.gz test2.csv-joseph-esprimop957-$CURRENT_DATE.tab.gz test3.csv-joseph-esprimop957-$CURRENT_DATE.tab.gz test1.csv-joseph-esprimop957.tab.gz test2.csv-joseph-esprimop957.tab.gz test3.csv-joseph-esprimop957.tab.gz *_system-info.txt && cd /tmp/ && rm log_sus.sh log_baseline.sh log_idle.sh'
+   - ssh -o StrictHostKeyChecking=no -i ~/.ssh/kecolab karan@$LABPC_IP ' rm log_sus.csv log_baseline.csv log_idle.csv test1.csv-*.tab.gz test2.csv-*.tab.gz test3.csv-*.tab.gz *_system-info.txt && cd /tmp/ && rm log_sus.sh log_baseline.sh log_idle.sh'
   artifacts:
     paths:
       - testreadings1.csv
