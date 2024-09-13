@@ -11,23 +11,23 @@ setwd("~/")
 getwd()
 
 # Inputs
-scenarioMarkersFilename <- "log_idle.csv"
-PowerScenarioFilename <- "pm_idl.csv"
-performanceScenarioFilename <- "hw_idl.csv"
+scenarioMarkersFilename <- "log_sus.csv"
+PowerScenarioFilename <- "pm_sus.csv"
+performanceScenarioFilename <- "hw_sus.csv"
 
 # Names
 reportTitle <- "KEcoLab Measurement Analysis"
-scenarioName <- "Idle Mode Scenario"
-measurementName <- "Idle Mode Scenario"
-SUT <- "Idle Mode Scenario"
+scenarioName <- "Standard Usage Scenario"
+measurementName <- "Usage Scenario"
+SUT <- "Standard Usage Scenario"
 
 # Rmd for report
-rmdLocation <- "idle_analysis_script_Report.Rmd"
+rmdLocation <- "sus_analysis_script_Report.Rmd"
 
 #Outputs:
-dataSaveFileName <- "idle_analysis_script_Data.RData"
-outputFileName <- "~/Idle_Report.pdf"
-graphicsFolder <- "idle_graphics"
+dataSaveFileName <- "sus_analysis_script_Data.RData"
+outputFileName <- "~/SUS_Report.pdf"
+graphicsFolder <- "sus_graphics"
 
 # =============================== #
 # Import "analysis_script.R" This #
@@ -43,9 +43,9 @@ source(analysis_script.R)
 
 #Generate the pdf using RMarkdown
 render(input = rmdLocation, output_file = outputFileName, params = list(
-  title = "Idle Mode Scenario Analysis",
+  title = "Standard Usage Scenario Analysis",
   subtitle = "Measurement From KEcoLab",
-  measurementName = "Idle Mode Scenario",
+  measurementName = "Standard Usage Scenario",
   SUT = SUT,
   startmarkers = startmarkers,
   endmarkers = endmarkers,

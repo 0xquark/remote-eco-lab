@@ -14,13 +14,15 @@
 #You should have received a copy of the GNU General Public License
 #along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-setwd("~/")
+# ======================================= #
+# The beginning of the script is specific #
+# for Idle Mode or SUS scenario.          #
+# ======================================= #
 
-getwd()
-# Inputs:
-scenarioMarkersFilename <- "log_sus.csv"
-PowerScenarioFilename <- "pm_sus.csv"
-performanceScenarioFilename <- "hw_sus.csv"
+# ========================================================== #
+# CODE BELOW IS THE SAME FOR BOTH SUS AND IDLE MODE SCENARIO #
+# ========================================================== #
+
 # set gpuScenarioFilename to NULL (or comment out) if no gpu data is available
 gpuScenarioFilename <- NULL
 # set modelHistoryFilename to NULL (or comment out) if no history is available
@@ -41,19 +43,8 @@ gpuTimestampFormat <- "%Y/%m/%d %H:%M:%OS"
 performanceDataColumns <- c("CPU.Totl", "MEM.Used", "NET.RxKBTot", "NET.TxKBTot", "DSK.ReadTot", "DSK.WriteTot")
 performanceBaselineColumns <- c("CPU.Totl", "MEM.Used", "NET.RxKBTot", "NET.TxKBTot", "DSK.ReadTot", "DSK.WriteTot")
 
-reportTitle <- "KEcoLab Measurement Analysis"
-scenarioName <- "Standard Usage Scenario"
-measurementName <- "Usage Scenario"
-SUT <- "Standard Usage Scenario"
-
-# Functions and Rmd:
-rmdLocation <- "analysis_script_Report.Rmd"
+# Functions
 functionsLocation <- "analysis_script_functions.R"
-
-#Outputs:
-dataSaveFileName <- "analysis_script_Data.RData"
-outputFileName <- "~/Report.pdf"
-graphicsFolder <- "graphics"
 
 #----------------------------
 # Libraries
@@ -66,9 +57,9 @@ op <- options(digits.secs = 3, OutDec = ".") # Make sure that fractions of secon
 
 # Load measurement data
 # Energy consumption data
-energyConsumptionData <- read.table(file = PowerScenarioFilename, header = T, sep = ";", skip = 0, dec = ",", stringsAsFactors = F)
+energyConsumptionData <- read.table(file = PowerIdleFilename, header = T, sep = ";", skip = 0, dec = ",", stringsAsFactors = F)
 # Performance data
-performanceData <- read.table(file = performanceScenarioFilename, header = T, sep = ";", quote = "\"", skip = 0, dec = ".", stringsAsFactors = F)
+performanceData <- read.table(file = performanceIdleFilename, header = T, sep = ";", quote = "\"", skip = 0, dec = ".", stringsAsFactors = F)
 cols <- unlist(lapply(performanceDataColumns, grep, names(performanceData)))
 perfcolnames <- c("processorTime", "ram", "networkReceived", "networkSent", "HDDRead", "HDDWritten")
 names(performanceData)[cols] <- perfcolnames
@@ -90,7 +81,7 @@ gpuData <- NULL
 
 
 # Markers
-markers <- read.csv(file = scenarioMarkersFilename, header = F, sep = ";", fill = T, stringsAsFactors = F)
+markers <- read.csv(file = idleMarkersFilename, header = F, sep = ";", fill = T, stringsAsFactors = F)
 if(ncol(markers) == 3){
   names(markers) <- c("timestamp", "type", "text")
 } else {
@@ -402,39 +393,7 @@ setwd(saveWd)
 
 setwd(saveWd)
 
-#Generate the pdf using RMarkdown
-render(input = rmdLocation, output_file = outputFileName, params = list(
-  title = "Standard Usage Scenario Analysis",
-  subtitle = "Measurement From KEcoLab",
-  measurementName = "Standard Usage Scenario",
-  SUT = SUT,
-  startmarkers = startmarkers,
-  endmarkers = endmarkers,
-  baselineStartmarkers = baselineStartmarkers,
-  baselineEndmarkers = baselineEndmarkers,
-  startActions = startActions,
-  stopActions = stopActions,
-  measurementCount = nrow(startmarkers),
-  shortestTestrun = shortestTestrun,
-  longestTestrun = longestTestrun,
-  actionNames = actionNames,
-  baselineCount = nrow(baselineStartmarkers),
-  performanceBaseline = performanceBaseline,
-  performanceMeasurement = performanceMeasurement,
-  performanceMeasurementActions = performanceMeasurementActions,
-  allPerformanceMeasurements = allPerformanceMeasurements,
-  allPerformanceBaselines = allPerformanceBaselines,
-  powerBaseline = powerBaseline,
-  powerMeasurement = powerMeasurement,
-  powerMeasurementActions = powerMeasurementActions,
-  allPowerMeasurements = allPowerMeasurements,
-  allPowerBaselines = allPowerBaselines,
-  graphicsFolder = graphicsFolder
-))
-
-#restore options
-options(op)
-
-#save data
-save.image(dataSaveFileName)
-
+# ================================== #
+# The rest of the script is specific #
+# for Idle Mode or SUS scenario.     #
+# ================================== #

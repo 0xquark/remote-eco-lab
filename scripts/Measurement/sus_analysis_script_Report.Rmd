@@ -29,7 +29,7 @@ params:
   shortestTestrun: 0
   longestTestrun: 0
   measurementName: '---'
-  SUT: 'Idle Mode Scenario'
+  SUT: 'Standard Usage Scenario'
   performanceBaseline: !r data.frame(0)
   performanceMeasurement: !r data.frame(0)
   performanceMeasurementActions: !r data.frame(0)
@@ -55,7 +55,7 @@ params:
   baselineCount: -1
   whatToPlot: !r list()
   actionNames: !r c("a","b")
-  graphicsFolder: "idle_graphics"
+  graphicsFolder: "sus_graphics"
 ---
 
 ---
