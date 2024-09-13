@@ -121,7 +121,7 @@ test-result:
   - cd remote-eco-lab/scripts/Preprocessing
   - cp Preprocessing.R ~
   - cd ../Measurement 
-  - cp sus_analysis_script.R sus_analysis_script_Report.Rmd idle_analysis_script.R idle_analysis_script_Report.Rmd analysis_script_functions.R analysis_script.R anaylsis_script_Report.Rmd ~/
+  - cp sus_analysis_script.R sus_analysis_script_Report.Rmd idle_analysis_script.R idle_analysis_script_Report.Rmd analysis_script_functions.R analysis_script.R analysis_script_Report.Rmd ~/
   # Preprocess Raw data for OSCAR Script
   - Rscript ~/Preprocessing.R test1.csv-joseph-esprimop957-$CURRENT_DATE.tab test2.csv-joseph-esprimop957-$CURRENT_DATE.tab test3.csv-joseph-esprimop957-$CURRENT_DATE.tab  $CI_PROJECT_DIR
   # Run OSCAR Analysis script to generate a report SUS
