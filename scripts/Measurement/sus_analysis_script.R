@@ -35,7 +35,7 @@ graphicsFolder <- "sus_graphics"
 # and SUS scenarios.              #
 # =============================== #
 
-source(analysis_script.R)
+source("analysis_script.R")
 
 # ========================= #
 # Stop "analysis_script.R"  #
