@@ -123,25 +123,24 @@ result:
   - cd remote-eco-lab/scripts/Preprocessing
   - cp Preprocessing.R ~
   - cd ../Measurement 
-  # - cp analysis_script.R analysis_script_Report.Rmd analysis_script_functions.R ~/
-  - cp analysis_script.R analysis_script_Report.Rmd idle_analysis_script.R idle_analysis_script_Report.Rmd analysis_script_functions.R ~/
+  - cp sus_analysis_script.R sus_analysis_script_Report.Rmd idle_analysis_script.R idle_analysis_script_Report.Rmd analysis_script_functions.R analysis_script.R anaylsis_script_Report.Rmd ~/
   # Preprocess Raw data for OSCAR Script
   - Rscript ~/Preprocessing.R test1.csv-joseph-esprimop957-$CURRENT_DATE.tab test2.csv-joseph-esprimop957-$CURRENT_DATE.tab test3.csv-joseph-esprimop957-$CURRENT_DATE.tab $CI_PROJECT_DIR
   # Run OSCAR Analysis script to generate a report SUS
-  - Rscript ~/analysis_script.R
-  - cp -r ~/Report.pdf ~/Report.tex ~/graphics ~/Report_files $CI_PROJECT_DIR/
+  - Rscript ~/sus_analysis_script.R
+  - cp -r ~/SUS_Report.pdf ~/SUS_Report.tex ~/sus_graphics ~/SUS_Report_files $CI_PROJECT_DIR/
   # Run OSCAR Analysis script to generate a report for Idle Mode
   - Rscript ~/idle_analysis_script.R
-  - cp -r ~/Report_Idle.pdf ~/Report_Idle.tex ~/graphics_idle ~/Report_Idle_files $CI_PROJECT_DIR/
+  - cp -r ~/Idle_Report.pdf ~/Idle_Report.tex ~/idle_graphics ~/Idle_Report_files $CI_PROJECT_DIR/
   artifacts:
     paths:
-     - Report.pdf
-     - Report.tex
-     - graphics/
-     - Report_files
-     - Report_Idle.pdf
-     - Report_Idle.tex
-     - graphics_idle
-     - Report_Idle_files
+     - SUS_Report.pdf
+     - SUS_Report.tex
+     - SUS_Report_files
+     - sus_graphics
+     - Idle_Report.pdf
+     - Idle_Report.tex
+     - Idle_Report_files
+     - idle_graphics
   rules:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
