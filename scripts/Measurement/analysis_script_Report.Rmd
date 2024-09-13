@@ -8,7 +8,7 @@
 This report contains the analysis results from the KEcoLab resource consumption measurement "`r params$measurementName`". The measurements were executed $n_M = `r params$measurementCount`$ times. The baseline was averaged over $n_B = `r params$baselineCount`$ passes. SUT was \textit{`r params$SUT`}.
 
 ## Durations
-Table \ref{tab:measurement_durations} describes the measurement and baseline durations (measured in seconds) and table \ref{tab:action_durations} describes the duration for the actions. Additionally, Figures \ref{fig:durations} and \ref{fig:action_durations} show the according boxplots.
+Table \ref{tab:measurement_durations} describes the measurement and baseline durations (measured in seconds) and Table \ref{tab:action_durations} describes the duration for the actions. Additionally, Figure \ref{fig:durations} and Figure \ref{fig:action_durations} show the according boxplots.
 ```{r echo=FALSE, results='asis'}
 library(psych)
 library(knitr)
@@ -104,7 +104,7 @@ To evaluate the energy consumption that is caused by the software product, we fi
 \label{eqn:Wel}
 W_{el} = \frac{1}{3600} \sum_{n=1}^{m} P_n, \text{ mit } P_n=P_1, P_2, P_3, ..., P_m
 \end{equation}
-Thus, the energy for one testrun or baseline equals the sum of the per-second measurement values (resulting in the unit Wattseconds). It is then divided by $3600\frac{s}{h}$, resulting in the unit Watthours. We then average the energy consumption means over the testruns and baselines, respectively. The results can be found in table \ref{tab:energyResults}.
+Thus, the energy for one testrun or baseline equals the sum of the per-second measurement values (resulting in the unit Wattseconds). It is then divided by $3600\frac{s}{h}$, resulting in the unit Watthours. We then average the energy consumption means over the testruns and baselines, respectively. The results can be found in Table \ref{tab:energyResults}.
 
 ```{r echo=FALSE, results='asis'}
 # Calculate Power
@@ -162,7 +162,7 @@ Finally, the mean adjusted baseline energy is subtracted from the mean energy of
 
 Hence, the \textbf{energy consumption induced by the scenario is `r format(round(softwareWatthours, 3), nsmall = 3)` Wh}.
 
-Table \ref{tab:testrunResults} contains the results for the individual testruns. Figure \ref{fig:powerWhPlots} shows the resulting energy measurements for each testrun and figure \ref{fig:powerWhBoxplots} shows the boxplots, depicting the measurement results.
+Table \ref{tab:testrunResults} contains the results for the individual testruns. Figure \ref{fig:powerWhPlots} shows the resulting energy measurements for each testrun and Figure \ref{fig:powerWhBoxplots} shows the boxplots, depicting the measurement results.
 
 ```{r echo=FALSE, results='asis'}
 resultTable <- as.data.frame(list(c(1:length(powerMeans), "mean"), c(powerMeans, mean(powerMeans)), c(watthours, mean(watthours)), c(watthours - adjustedBaselineWatthours, softwareWatthours)))
@@ -190,7 +190,7 @@ dev.off()
 \newpage
 
 ## Energy Consumption per Action
-This section contains the results for the energy consumption analysis of the individual actions. The results shown in table \ref{tab:ActionResultsPower} represent the mean values for the power and energy consumption of the actions, calculated in the same way as the testrun results. The scenario induced energy is plotted in figure \ref{fig:powerWhAction}.
+This section contains the results for the energy consumption analysis of the individual actions. The results shown in Table \ref{tab:ActionResultsPower} represent the mean values for the power and energy consumption of the actions, calculated in the same way as the testrun results. The scenario induced energy is plotted in Figure \ref{fig:powerWhAction}.
 
 ```{r results='asis', echo = FALSE}
 #cat(paste("*", params$actionNames, collapse ="\n"), "\n\n")
@@ -229,7 +229,7 @@ dev.off()
 # Create the model history section (if any)
 if(!is.null(params$modelHistory)){
   cat("\\clearpage\n\n# Model history\n\n")
-  cat("This section describes the data from the ML process. It includes training and validation loss and accuracy of the models from each testrun and for all epochs (Tables \\ref{tab:history_means_epoch} and \\ref{tab:history_means} and figures \\ref{fig:loss_means} and \\ref{fig:accuracy_means}).\n\n")
+  cat("This section describes the data from the ML process. It includes training and validation loss and accuracy of the models from each testrun and for all epochs (Table \\ref{tab:history_means_epoch} and Table \\ref{tab:history_means} and Figure \\ref{fig:loss_means} and Figure \\ref{fig:accuracy_means}).\n\n")
   print(kable(allEpochsMeans, caption="Mean loss and accuracy over all testruns\\label{tab:history_means_epoch}", digits = 3))
   print(kable(historyMeans, caption="Mean loss and accuracy over all testruns\\label{tab:history_means}", digits = 3))
   cat("\n\n\\clearpage\n\n![Graph of the model loss during training (l) and validation (r) \\label{fig:loss_means}](", params$graphicsFolder, "/model_history/model_loss_mean.png)\n\n", sep = "")
@@ -243,6 +243,7 @@ if(!is.null(params$modelHistory)){
 \label{sec:hardware}
 The analysis of the hardware utilization is, for the most part, analogous to the power analysis. The data is averaged over time and for power measurements, the energy is calculated. Table \ref{tab:hwIndicators} shows which parameters were logged (using the command `collectl -s cdmn -i1 -P --sep 59 -f`) and analyzed.
 
+\begin{center}
 \begin{table}[ht]
 \caption{Logged hardware indicators}
 \label{tab:hwIndicators}
@@ -282,6 +283,7 @@ if(evaluateGpuMeasurement){
 }
 ```
 \end{table}
+\end{center}
 
 ```{r results='asis', echo = FALSE}
 if(!evaluateGpuMeasurement){
@@ -290,36 +292,38 @@ if(!evaluateGpuMeasurement){
 ```
 
 ## Raw Data Graphs
-For each parameter, there is a figure that depicts the raw measurement results, as can be seen in table \ref{tab:hwMeasurementFigures}.
+For each parameter, there is a figure that depicts the raw measurement results, as can be seen in Table \ref{tab:hwMeasurementFigures}.
 
+\begin{center}
 \begin{table}[htp]
 \caption{Hardware measurement figures}
 \label{tab:hwMeasurementFigures}
 \begin{tabular}{l|l|l}
 \hline
 parameter & scenario graph & baseline graph \\ \hline
-CPU load & figure \ref{fig:hw_cpu} & figure \ref{fig:hw_cpu_bl} \\
-RAM usage & figure \ref{fig:hw_ram} & figure \ref{fig:hw_ram_bl} \\
-HDD activity & figure \ref{fig:hw_hdd} & figure \ref{fig:hw_hdd_bl} \\
-Network traffic & figure \ref{fig:hw_nw} & figure \ref{fig:hw_nw_bl} \\
+CPU load & Figure \ref{fig:hw_cpu} & Figure \ref{fig:hw_cpu_bl} \\
+RAM usage & Figure \ref{fig:hw_ram} & Figure \ref{fig:hw_ram_bl} \\
+HDD activity & Figure \ref{fig:hw_hdd} & Figure \ref{fig:hw_hdd_bl} \\
+Network traffic & Figure \ref{fig:hw_nw} & Figure \ref{fig:hw_nw_bl} \\
 
 ```{r results='asis', echo = FALSE}
 if(evaluateGpuMeasurement){
-  cat("GPU Performance state & figure \\ref{fig:gpu_pstate} & figure \\ref{fig:gpu_pstate_bl} \\\\\n")
-  cat("Current PCI-E link generation & figure \\ref{fig:gpu_pcie} & figure \\ref{fig:gpu_pcie_bl} \\\\\n")
-  cat("Core GPU temperature & figure \\ref{fig:gpu_temp} & figure \\ref{fig:gpu_temp_bl} \\\\\n")
-  cat("GPU load & figure \\ref{fig:gpu_load} & figure \\ref{fig:gpu_load_bl} \\\\\n")
-  cat("GPU Memory load & figure \\ref{fig:gpu_mem_percent} & figure \\ref{fig:gpu_mem_percent_bl} \\\\\n")
-  cat("Total gpu memory allocated & figure \\ref{fig:gpu_mem_used} & figure \\ref{fig:gpu_mem_used_bl} \\\\\n")
-  cat("Power draw & figure \\ref{fig:gpu_power} & figure \\ref{fig:gpu_power_bl} \\\\\n")
-  cat("Frequency of Streaming Multiprocessor clock & figure \\ref{fig:gpu_sm} & figure \\ref{fig:gpu_sm_bl} \\\\\n")
-  cat("Frequency of memory clock & figure \\ref{fig:gpu_mc} & figure \\ref{fig:gpu_mc_bl} \\\\\n")
-  cat("Frequency of graphics (shader) clock & figure \\ref{fig:gpu_gc} & figure \\ref{fig:gpu_gc_bl}\n")
+  cat("GPU Performance state & Figure \\ref{fig:gpu_pstate} & Figure \\ref{fig:gpu_pstate_bl} \\\\\n")
+  cat("Current PCI-E link generation & Figure \\ref{fig:gpu_pcie} & Figure \\ref{fig:gpu_pcie_bl} \\\\\n")
+  cat("Core GPU temperature & Figure \\ref{fig:gpu_temp} & Figure \\ref{fig:gpu_temp_bl} \\\\\n")
+  cat("GPU load & Figure \\ref{fig:gpu_load} & Figure \\ref{fig:gpu_load_bl} \\\\\n")
+  cat("GPU Memory load & Figure \\ref{fig:gpu_mem_percent} & Figure \\ref{fig:gpu_mem_percent_bl} \\\\\n")
+  cat("Total gpu memory allocated & Figure \\ref{fig:gpu_mem_used} & Figure \\ref{fig:gpu_mem_used_bl} \\\\\n")
+  cat("Power draw & Figure \\ref{fig:gpu_power} & Figure \\ref{fig:gpu_power_bl} \\\\\n")
+  cat("Frequency of Streaming Multiprocessor clock & Figure \\ref{fig:gpu_sm} & Figure \\ref{fig:gpu_sm_bl} \\\\\n")
+  cat("Frequency of memory clock & Figure \\ref{fig:gpu_mc} & Figure \\ref{fig:gpu_mc_bl} \\\\\n")
+  cat("Frequency of graphics (shader) clock & Figure \\ref{fig:gpu_gc} & Figure \\ref{fig:gpu_gc_bl}\n")
 }
 ```
 
 \end{tabular}
 \end{table}
+\end{center}
 
 ![Graph of the processor load\label{fig:hw_cpu}](`r paste(params$graphicsFolder, "cpu_usage.png", sep="/")`)
 
@@ -389,7 +393,7 @@ if(evaluateGpuMeasurement){
 This section contains the descriptive analysis of each parameter. The mean usage is calculated as the mean value of the measurement testruns $\overline{x}(Parameter_{T})$ from which the mean value of the baseline $\overline{x}(Parameter_{B})$ is subtracted. Thus, the average value is calculated as
 $$\overline{x}(Parameter_{ML}) = \overline{x}(Parameter_{T}) - \overline{x}(Parameter_{B})\text{.}$$
 
-Tables \ref{tab:hardwareOverview} and \ref{tab:hardwareResults} list the resulting means for each parameter and baseline.
+Table \ref{tab:hardwareOverview} and Table \ref{tab:hardwareResults} list the resulting means for each parameter and baseline.
 
 ```{r echo=FALSE, results='asis'}
 # Calculate hardware utilization
@@ -605,7 +609,7 @@ kable(resultTable, caption = "Hardware usage results\\label{tab:hardwareResults}
 
 ```{r echo=FALSE, results='hide', fig.show='hide'}
 if(evaluateGpuMeasurement){
-  cat("Additionally, the indicatiors \"GPU Performance state\" (pstate), \"Current PCI-E link generation\" (pcie.link.gen.current) are described in a bar plot (figure \\ref{fig:gpu_barplots}).\n\n")
+  cat("Additionally, the indicators \"GPU Performance state\" (pstate), \"Current PCI-E link generation\" (pcie.link.gen.current) are described in a bar plot (Figure \\ref{fig:gpu_barplots}).\n\n")
 
   pstatesTab <-  table(params$allGpuMeasurements$pstate)
   pstatesBaselineTab <- table(params$allGpuBaselines$pstate)
@@ -658,7 +662,7 @@ if(evaluateGpuMeasurement){
 
   cat("### GPU Energy Consumption\n\\label{sec:gpu-power}\n\n")
 
-  cat("For the GPU power draw (power.draw), logged with nvidia-smi, the energy consumption is also calculated according to formulas \\ref{eqn:Wel} to \\ref{eqn:Wel_train}. The results are displayed in tables \\ref{tab:gpuEnergyResults} (overview) and \\ref{tab:gpuTestrunResults} (individual testruns).\n\n", sep = "")
+  cat("For the GPU power draw (power.draw), logged with nvidia-smi, the energy consumption is also calculated according to formulas \\ref{eqn:Wel} to \\ref{eqn:Wel_train}. The results are displayed in Table \\ref{tab:gpuEnergyResults} (overview) and Table \\ref{tab:gpuTestrunResults} (individual testruns).\n\n", sep = "")
 
   # Calculate Power
   gpuPowerMeans <- NULL
@@ -700,7 +704,7 @@ if(evaluateGpuMeasurement){
 
 ```{r echo=FALSE, results='asis'}
 if(evaluateGpuMeasurement){
-  cat("Hence, the \\textbf{GPU's energy consumption induced by the training process is ", format(round(softwareGpuWatthours, 3), nsmall = 3), "~Wh = ", format(round(gpuWatthoursTable$mean, 3), nsmall = 3), "~Wh (testrun GPU energy) - ", format(round(adjustedGpuBaselineWatthours, 3), nsmall = 3), "~Wh (adjusted baseline GPU energy)}. Figure \\ref{fig:gpuPowerWhPlots} shows the resulting energy measurements for each testrun and figure \\ref{fig:gpuPowerWhBoxplots} shows the boxplots, depicting the gpu power measurement results.\n\n", sep = "")
+  cat("Hence, the \\textbf{GPU's energy consumption induced by the training process is ", format(round(softwareGpuWatthours, 3), nsmall = 3), "~Wh = ", format(round(gpuWatthoursTable$mean, 3), nsmall = 3), "~Wh (testrun GPU energy) - ", format(round(adjustedGpuBaselineWatthours, 3), nsmall = 3), "~Wh (adjusted baseline GPU energy)}. Figure \\ref{fig:gpuPowerWhPlots} shows the resulting energy measurements for each testrun and Figure \\ref{fig:gpuPowerWhBoxplots} shows the boxplots, depicting the gpu power measurement results.\n\n", sep = "")
 
   png(filename = paste(params$graphicsFolder, "gpu_power_measurement_overview.png", sep="/"), width = 700, height = 400)
   plot(gpuWatthours - adjustedGpuBaselineWatthours, type = "h", main = paste("Overview of the GPU's energy consumption for the measurements"), xlab = "testrun #", ylab = "Energy [Wh]")
@@ -724,29 +728,32 @@ if(evaluateGpuMeasurement){
 ## Hardware Results per Testrun
 
 The results for the individual testruns are presented as tables and figures. Table \ref{tab:hw_testrun_results} gives an overview.
+
+\begin{center}
 \begin{table}[htp]
 \caption{Hardware measurement results per testrun}
 \label{tab:hw_testrun_results}
 \begin{tabular}{l|l|l|l}
 \hline
 parameter & overview table & overview graph & boxplots \\ \hline
-CPU load & table \ref{tab:hw_cpu} & figure \ref{fig:hw_cpu_overview} & figure \ref{fig:hw_cpu_boxplots}\\
-RAM usage & table \ref{tab:hw_ram} & figure \ref{fig:hw_ram_overview} & figure \ref{fig:hw_ram_boxplots}\\
-HDD activity & table \ref{tab:hw_hdd} & figure \ref{fig:hw_hdd_overview} & figure \ref{fig:hw_hdd_boxplots}\\
-Network traffic & table \ref{tab:hw_nw} & figure \ref{fig:hw_nw_overview} & figure \ref{fig:hw_nw_boxplots}\\
+CPU load & Table \ref{tab:hw_cpu} & Figure \ref{fig:hw_cpu_overview} & Figure \ref{fig:hw_cpu_boxplots}\\
+RAM usage & Table \ref{tab:hw_ram} & Figure \ref{fig:hw_ram_overview} & Figure \ref{fig:hw_ram_boxplots}\\
+HDD activity & Table \ref{tab:hw_hdd} & Figure \ref{fig:hw_hdd_overview} & Figure \ref{fig:hw_hdd_boxplots}\\
+Network traffic & Table \ref{tab:hw_nw} & Figure \ref{fig:hw_nw_overview} & Figure \ref{fig:hw_nw_boxplots}\\
 ```{r results='asis', echo = FALSE}
 if(evaluateGpuMeasurement){
-  cat("Core GPU temperature & table \\ref{tab:gpu_temp} & figure \\ref{fig:gpu_temp_overview} & figure \\ref{fig:gpu_temp_boxplots}\\\\\n")
-  cat("GPU load & table \\ref{tab:gpu_load} & figure \\ref{fig:gpu_load_overview} & figure \\ref{fig:gpu_load_boxplots}\\\\\n")
-  cat("GPU Memory load & table \\ref{tab:gpu_mem_percent} & figure \\ref{fig:gpu_mem_percent_overview} & figure \\ref{fig:gpu_mem_percent_boxplots}\\\\\n")
-  cat("Total gpu memory allocated & table \\ref{tab:gpu_mem_used} & figure \\ref{fig:gpu_mem_used_overview} & figure \\ref{fig:gpu_mem_used_boxplots}\\\\\n")
-  cat("Frequency of Streaming Multiprocessor clock & table \\ref{tab:gpu_sm} & figure \\ref{fig:gpu_sm_overview} & figure \\ref{fig:gpu_sm_boxplots}\\\\\n")
-  cat("Frequency of memory clock & table \\ref{tab:gpu_mc} & figure \\ref{fig:gpu_mc_overview} & figure \\ref{fig:gpu_mc_boxplots}\\\\\n")
-  cat("Frequency of graphics (shader) clock & table \\ref{tab:gpu_gc} & figure \\ref{fig:gpu_gc_overview} & figure \\ref{fig:gpu_gc_boxplots}\\\\\n")
+  cat("Core GPU temperature & Table \\ref{tab:gpu_temp} & Figure \\ref{fig:gpu_temp_overview} & Figure \\ref{fig:gpu_temp_boxplots}\\\\\n")
+  cat("GPU load & Table \\ref{tab:gpu_load} & Figure \\ref{fig:gpu_load_overview} & Figure \\ref{fig:gpu_load_boxplots}\\\\\n")
+  cat("GPU Memory load & Table \\ref{tab:gpu_mem_percent} & Figure \\ref{fig:gpu_mem_percent_overview} & Figure \\ref{fig:gpu_mem_percent_boxplots}\\\\\n")
+  cat("Total gpu memory allocated & Table \\ref{tab:gpu_mem_used} & Figure \\ref{fig:gpu_mem_used_overview} & Figure \\ref{fig:gpu_mem_used_boxplots}\\\\\n")
+  cat("Frequency of Streaming Multiprocessor clock & Table \\ref{tab:gpu_sm} & Figure \\ref{fig:gpu_sm_overview} & Figure \\ref{fig:gpu_sm_boxplots}\\\\\n")
+  cat("Frequency of memory clock & Table \\ref{tab:gpu_mc} & Figure \\ref{fig:gpu_mc_overview} & Figure \\ref{fig:gpu_mc_boxplots}\\\\\n")
+  cat("Frequency of graphics (shader) clock & Table \\ref{tab:gpu_gc} & Figure \\ref{fig:gpu_gc_overview} & Figure \\ref{fig:gpu_gc_boxplots}\\\\\n")
 }
 ```
 \end{tabular}
 \end{table}
+\end{center}
 
 \clearpage
 
@@ -1069,7 +1076,7 @@ if(evaluateGpuMeasurement){
   gpuText <- "and GPU usage "
 }
 
-cat(paste0("The results shown in tables below represent the mean values for the hardware ", gpuText, "of the actions, calculated in the same way as the testrun results.\n\n"))
+cat(paste0("The results shown in the tables below represent the mean values for the hardware ", gpuText, "of the actions, calculated in the same way as the testrun results.\n\n"))
 
 if(evaluateGpuMeasurement){
   gpuPowerMeansAction <- NULL
