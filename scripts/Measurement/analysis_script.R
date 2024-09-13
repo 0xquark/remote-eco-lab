@@ -57,7 +57,7 @@ op <- options(digits.secs = 3, OutDec = ".") # Make sure that fractions of secon
 
 # Load measurement data
 # Energy consumption data
-energyConsumptionData <- read.table(file = PowerIdleFilename, header = T, sep = ";", skip = 0, dec = ",", stringsAsFactors = F)
+energyConsumptionData <- read.table(file = PowerScenarioFilename, header = T, sep = ";", skip = 0, dec = ",", stringsAsFactors = F)
 # Performance data
 performanceData <- read.table(file = performanceIdleFilename, header = T, sep = ";", quote = "\"", skip = 0, dec = ".", stringsAsFactors = F)
 cols <- unlist(lapply(performanceDataColumns, grep, names(performanceData)))
