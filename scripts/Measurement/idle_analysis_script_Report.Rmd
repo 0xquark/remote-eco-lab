@@ -57,5 +57,5 @@ subtitle: "`r params$subtitle`"
 documentclass: article
 ---
 
-```{r child = 'anaylsis_script_Report.Rmd'}
+```{r child = 'analysis_script_Report.Rmd'}
 ```
