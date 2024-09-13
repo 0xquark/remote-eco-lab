@@ -59,7 +59,7 @@ op <- options(digits.secs = 3, OutDec = ".") # Make sure that fractions of secon
 # Energy consumption data
 energyConsumptionData <- read.table(file = PowerScenarioFilename, header = T, sep = ";", skip = 0, dec = ",", stringsAsFactors = F)
 # Performance data
-performanceData <- read.table(file = performanceIdleFilename, header = T, sep = ";", quote = "\"", skip = 0, dec = ".", stringsAsFactors = F)
+performanceData <- read.table(file = performanceScenarioFilename, header = T, sep = ";", quote = "\"", skip = 0, dec = ".", stringsAsFactors = F)
 cols <- unlist(lapply(performanceDataColumns, grep, names(performanceData)))
 perfcolnames <- c("processorTime", "ram", "networkReceived", "networkSent", "HDDRead", "HDDWritten")
 names(performanceData)[cols] <- perfcolnames
@@ -81,7 +81,7 @@ gpuData <- NULL
 
 
 # Markers
-markers <- read.csv(file = idleMarkersFilename, header = F, sep = ";", fill = T, stringsAsFactors = F)
+markers <- read.csv(file = scenarioMarkersFilename, header = F, sep = ";", fill = T, stringsAsFactors = F)
 if(ncol(markers) == 3){
   names(markers) <- c("timestamp", "type", "text")
 } else {
