@@ -19,7 +19,7 @@ timestamp() {
 
 # Loop running for 30 times
 # start loop
-for ((i = 1 ; i <= 2 ; i++)); do
+for ((i = 1 ; i <= 4 ; i++)); do
 
     # burn in
     syncUp 10 #60
