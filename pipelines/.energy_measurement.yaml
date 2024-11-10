@@ -57,11 +57,11 @@ energy_measurement:
    - pkill -f check_gude_modified.py
    # Export collectl readings using Current Date in the filename
    - ssh -o StrictHostKeyChecking=no -i ~/.ssh/kecolab karan@$LABPC_IP "
-    export CURRENT_DATE=$(date +%Y%m%d) && cd ~/ && cp test1.csv-joseph-esprimop957-$CURRENT_DATE.tab.gz ~/test1.csv-joseph-esprimop957.tab.gz"
+    export CURRENT_DATE=$(date +%Y%m%d) && cd ~/ && cp test1.csv-kecolab-$CURRENT_DATE.tab.gz ~/test1.csv-kecolab.tab.gz"
    - ssh -o StrictHostKeyChecking=no -i ~/.ssh/kecolab karan@$LABPC_IP "
-    export CURRENT_DATE=$(date +%Y%m%d) && cd ~/ && cp test2.csv-joseph-esprimop957-$CURRENT_DATE.tab.gz ~/test2.csv-joseph-esprimop957.tab.gz"
+    export CURRENT_DATE=$(date +%Y%m%d) && cd ~/ && cp test2.csv-kecolab-$CURRENT_DATE.tab.gz ~/test2.csv-kecolab.tab.gz"
    - ssh -o StrictHostKeyChecking=no -i ~/.ssh/kecolab karan@$LABPC_IP "
-    export CURRENT_DATE=$(date +%Y%m%d) && cd ~/ && cp test3.csv-joseph-esprimop957-$CURRENT_DATE.tab.gz ~/test3.csv-joseph-esprimop957.tab.gz"
+    export CURRENT_DATE=$(date +%Y%m%d) && cd ~/ && cp test3.csv-kecolab-$CURRENT_DATE.tab.gz ~/test3.csv-kecolab.tab.gz"
    # Export Power Meter Readings
    - cp ~/testreadings1.csv testreadings1.csv
    - cp ~/testreadings2.csv testreadings2.csv
@@ -70,25 +70,25 @@ energy_measurement:
    - ssh -o StrictHostKeyChecking=no -i ~/.ssh/kecolab karan@$LABPC_IP "
     export CURRENT_DATE=$(date +%Y%m%d) && cd ~/ && cp ${CURRENT_DATE}_system-info.txt ~/system-info.txt"
    # Export all the Raw Power and Hardware Readings to Artifacts
-   - scp -o StrictHostKeyChecking=no -r -i  ~/.ssh/kecolab karan@$LABPC_IP:~/test1.csv-joseph-esprimop957.tab.gz test1.csv-joseph-esprimop957-$CURRENT_DATE.tab.gz
-   - scp -o StrictHostKeyChecking=no -r -i  ~/.ssh/kecolab karan@$LABPC_IP:~/test2.csv-joseph-esprimop957.tab.gz test2.csv-joseph-esprimop957-$CURRENT_DATE.tab.gz
-   - scp -o StrictHostKeyChecking=no -r -i  ~/.ssh/kecolab karan@$LABPC_IP:~/test3.csv-joseph-esprimop957.tab.gz test3.csv-joseph-esprimop957-$CURRENT_DATE.tab.gz
+   - scp -o StrictHostKeyChecking=no -r -i  ~/.ssh/kecolab karan@$LABPC_IP:~/test1.csv-kecolab.tab.gz test1.csv-kecolab-$CURRENT_DATE.tab.gz
+   - scp -o StrictHostKeyChecking=no -r -i  ~/.ssh/kecolab karan@$LABPC_IP:~/test2.csv-kecolab.tab.gz test2.csv-kecolab-$CURRENT_DATE.tab.gz
+   - scp -o StrictHostKeyChecking=no -r -i  ~/.ssh/kecolab karan@$LABPC_IP:~/test3.csv-kecolab.tab.gz test3.csv-kecolab-$CURRENT_DATE.tab.gz
    - scp -o StrictHostKeyChecking=no -r -i  ~/.ssh/kecolab karan@$LABPC_IP:~/log_sus.csv log_sus.csv
    - scp -o StrictHostKeyChecking=no -r -i  ~/.ssh/kecolab karan@$LABPC_IP:~/log_baseline.csv log_baseline.csv
    - scp -o StrictHostKeyChecking=no -r -i  ~/.ssh/kecolab karan@$LABPC_IP:~/log_idle.csv log_idle.csv
    - scp -o StrictHostKeyChecking=no -r -i  ~/.ssh/kecolab karan@$LABPC_IP:~/system-info.txt ${CURRENT_DATE}_system-info.txt
    # Remove all the logs 
    - cd ~/ && rm testreadings1.csv testreadings2.csv testreadings3.csv
-   # - ssh -o StrictHostKeyChecking=no -i ~/.ssh/kecolab karan@$LABPC_IP ' export CURRENT_DATE=$(date +%Y%m%d) && rm log_sus.csv log_baseline.csv log_idle.csv test1.csv-joseph-esprimop957-$CURRENT_DATE.tab.gz test2.csv-joseph-esprimop957-$CURRENT_DATE.tab.gz test3.csv-joseph-esprimop957-$CURRENT_DATE.tab.gz test1.csv-joseph-esprimop957.tab.gz test2.csv-joseph-esprimop957.tab.gz test3.csv-joseph-esprimop957.tab.gz *_system-info.txt && cd /tmp/ && rm log_sus.sh log_baseline.sh log_idle.sh'
+   # - ssh -o StrictHostKeyChecking=no -i ~/.ssh/kecolab karan@$LABPC_IP ' export CURRENT_DATE=$(date +%Y%m%d) && rm log_sus.csv log_baseline.csv log_idle.csv test1.csv-kecolab-$CURRENT_DATE.tab.gz test2.csv-kecolab-$CURRENT_DATE.tab.gz test3.csv-kecolab-$CURRENT_DATE.tab.gz test1.csv-kecolab.tab.gz test2.csv-kecolab.tab.gz test3.csv-kecolab.tab.gz *_system-info.txt && cd /tmp/ && rm log_sus.sh log_baseline.sh log_idle.sh'
    - ssh -o StrictHostKeyChecking=no -i ~/.ssh/kecolab karan@$LABPC_IP ' rm log_sus.csv log_baseline.csv log_idle.csv test1.csv-*.tab.gz test2.csv-*.tab.gz test3.csv-*.tab.gz *_system-info.txt && cd /tmp/ && rm log_sus.sh log_baseline.sh log_idle.sh'
   artifacts:
     paths:
       - testreadings1.csv
       - testreadings2.csv
       - testreadings3.csv
-      - "test1.csv-joseph-esprimop957-*.tab.gz"
-      - "test2.csv-joseph-esprimop957-*.tab.gz"
-      - "test3.csv-joseph-esprimop957-*.tab.gz"
+      - "test1.csv-kecolab-*.tab.gz"
+      - "test2.csv-kecolab-*.tab.gz"
+      - "test3.csv-kecolab-*.tab.gz"
       - log_sus.csv
       - log_baseline.csv
       - log_idle.csv
@@ -112,9 +112,9 @@ result:
     - echo $CI_PROJECT_DIR
   script:
   - export CURRENT_DATE=$(date +%Y%m%d)
-  - gunzip test1.csv-joseph-esprimop957-$CURRENT_DATE.tab.gz
-  - gunzip test2.csv-joseph-esprimop957-$CURRENT_DATE.tab.gz
-  - gunzip test3.csv-joseph-esprimop957-$CURRENT_DATE.tab.gz
+  - gunzip test1.csv-kecolab-$CURRENT_DATE.tab.gz
+  - gunzip test2.csv-kecolab-$CURRENT_DATE.tab.gz
+  - gunzip test3.csv-kecolab-$CURRENT_DATE.tab.gz
   - R -e "install.packages(c('tidyr', 'dplyr', 'lubridate', 'psych', 'rmarkdown', 'rjson', 'readr', 'reshape2', 'RColorBrewer'))"
   - R -e "install.packages('tinytex')"
   - R -e "tinytex::install_tinytex()"
@@ -125,7 +125,7 @@ result:
   - cd ../Measurement 
   - cp sus_analysis_script.R sus_analysis_script_Report.Rmd idle_analysis_script.R idle_analysis_script_Report.Rmd analysis_script_functions.R analysis_script.R analysis_script_Report.Rmd ~/
   # Preprocess Raw data for OSCAR Script
-  - Rscript ~/Preprocessing.R test1.csv-joseph-esprimop957-$CURRENT_DATE.tab test2.csv-joseph-esprimop957-$CURRENT_DATE.tab test3.csv-joseph-esprimop957-$CURRENT_DATE.tab $CI_PROJECT_DIR
+  - Rscript ~/Preprocessing.R test1.csv-kecolab-$CURRENT_DATE.tab test2.csv-kecolab-$CURRENT_DATE.tab test3.csv-kecolab-$CURRENT_DATE.tab $CI_PROJECT_DIR
   # Run OSCAR Analysis script to generate a report SUS
   - Rscript ~/sus_analysis_script.R
   - cp -r ~/SUS_Report.pdf ~/SUS_Report.tex ~/sus_graphics ~/SUS_Report_files $CI_PROJECT_DIR/
