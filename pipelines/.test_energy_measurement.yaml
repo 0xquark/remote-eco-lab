@@ -97,31 +97,15 @@ test-energy_measurement:
 # Result Stage (To Generate Energy Measurement Report)
 test-result:
   stage: test-result
-  image: rocker/r-bspm:22.04
+  image: invent-registry.kde.org/sysadmin/ci-images/kecolab-analysis:latest
   dependencies:
     # Use Artifacts from Previous stage
     - test-energy_measurement
-  before_script:
-    - apt-get update -qq
-    - apt-get install -y libxml2-dev libcurl4-openssl-dev libssl-dev git
-    #- apt-get install -y --no-install-recommends texlive-latex-base texlive-latex-extra lmodern
-    - add-apt-repository -y ppa:marutter/rrutter4.0
-    - add-apt-repository -y ppa:c2d4u.team/c2d4u4.0+
-    - echo $CI_PROJECT_DIR
   script:
   - export CURRENT_DATE=$(date +%Y%m%d)
   - gunzip test1.csv-kecolab-$CURRENT_DATE.tab.gz
   - gunzip test2.csv-kecolab-$CURRENT_DATE.tab.gz
   - gunzip test3.csv-kecolab-$CURRENT_DATE.tab.gz
-  - R -e "install.packages(c('tidyr', 'dplyr', 'lubridate', 'psych', 'rmarkdown', 'rjson', 'readr', 'reshape2', 'RColorBrewer'))"
-  - R -e "install.packages('tinytex')"
-  - R -e "tinytex::install_tinytex()"
-  - R -e "tinytex::tlmgr_install('babel-english')"
-  - git clone https://invent.kde.org/teams/eco/remote-eco-lab.git
-  - cd remote-eco-lab/scripts/Preprocessing
-  - cp Preprocessing.R ~
-  - cd ../Measurement 
-  - cp sus_analysis_script.R sus_analysis_script_Report.Rmd idle_analysis_script.R idle_analysis_script_Report.Rmd analysis_script_functions.R analysis_script.R analysis_script_Report.Rmd ~/
   # Preprocess Raw data for OSCAR Script
   - Rscript ~/Preprocessing.R test1.csv-kecolab-$CURRENT_DATE.tab test2.csv-kecolab-$CURRENT_DATE.tab test3.csv-kecolab-$CURRENT_DATE.tab  $CI_PROJECT_DIR
   # Run OSCAR Analysis script to generate a report SUS
